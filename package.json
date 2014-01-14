@@ -1,6 +1,6 @@
 {
 	"name": "gulp-usemin",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Js, css and html minify",
 	"main": "index.js",
 	"dependencies": {
