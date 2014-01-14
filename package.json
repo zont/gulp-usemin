@@ -1,35 +1,37 @@
 {
-  "name": "gulp-usemin",
-  "version": "0.0.1",
-  "description": "Js, css and html minify",
-  "main": "index.js",
-  "dependencies": {
-    "event-stream": "*",
-    "gulp-util": "*",
-		"minimize": "*"
-  },
-  "devDependencies": {
-    "should": "~2.1.1",
-    "mocha": "~1.15.1",
-    "gulp-util": "~2.0.0"
-  },
-  "scripts": {
-    "test": "./node_modules/.bin/mocha"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/zont/gulp-usemin.git"
-  },
-  "keywords": [
-    "gulpplugin",
-    "usemin"
-  ],
-  "author": "Alexander Zonov <zont@pochta.ru>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/zont/gulp-usemin/issues"
-  },
-  "engines": {
-    "node": ">=0.8"
-  }
+	"name": "gulp-usemin",
+	"version": "0.0.1",
+	"description": "Js, css and html minify",
+	"main": "index.js",
+	"dependencies": {
+		"clean-css": "latest",
+		"gulp-util": "latest",
+		"minimize": "latest",
+		"through2": "latest",
+		"uglify-js": "latest"
+	},
+	"devDependencies": {
+		"should": "latest",
+		"mocha": "latest",
+		"gulp-util": "latest"
+	},
+	"scripts": {
+		"test": "./node_modules/.bin/mocha"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/zont/gulp-usemin.git"
+	},
+	"keywords": [
+		"gulpplugin",
+		"usemin"
+	],
+	"author": "Alexander Zonov <zont@pochta.ru>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/zont/gulp-usemin/issues"
+	},
+	"engines": {
+		"node": ">=0.8"
+	}
 }
