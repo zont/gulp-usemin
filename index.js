@@ -97,7 +97,7 @@ module.exports = function (options) {
 		else {
 			files.push(new gutil.File({
 				path: mainName,
-				contents: new Buffer(html)
+				contents: new Buffer(html.join(''))
 			}));
 
 			callback(files);
