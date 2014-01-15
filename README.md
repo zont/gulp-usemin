@@ -1,4 +1,4 @@
-gulp-usemin
+# gulp-usemin [![NPM version][npm-image]][npm-url] [![Build status][travis-image]][travis-url]
 
 > Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).
 
@@ -61,28 +61,25 @@ An example of this in completed form can be seen below:
 ### Options
 
 #### cssmin
-
 Type: `Boolean`
 Default: `true`
 
 If true, minify output css.
 
 #### htmlmin
-
 Type: `Boolean`
 Default: `true`
 
 If true, minify output html.
 
 #### jsmin
-
 Type: `Boolean`
 Default: `true`
 
 If true, minify output js.
 
 
-## Use cases
+## Use case
 
 ```
 |
