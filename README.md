@@ -1,5 +1,4 @@
-# gulp-usemin [![NPM version][npm-image]][npm-url] [![Build status][travis-image]][travis-url]
-
+# gulp-usemin
 > Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).
 
 This task is designed for gulp 3.
