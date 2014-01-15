@@ -1,5 +1,6 @@
 var path = require('path');
 var fs = require('fs');
+var EOL = require('os').EOL;
 
 var CleanCSS = require('clean-css');
 var uglify = require('uglify-js');
@@ -37,7 +38,7 @@ module.exports = function (options) {
 	}
 
 	function processJs(content, name) {
-		var str = concat(content, jsReg, ';\n\n');
+		var str = concat(content, jsReg, ';' + EOL + EOL);
 
 		if (options.jsmin)
 			str = uglify.minify(str, {fromString: true}).code;
@@ -49,7 +50,7 @@ module.exports = function (options) {
 	}
 
 	function processCss(content, name) {
-		var str = concat(content, cssReg, '\n\n');
+		var str = concat(content, cssReg, EOL + EOL);
 
 		if (options.cssmin)
 			str = new CleanCSS({root: mainPath}).minify(str);
