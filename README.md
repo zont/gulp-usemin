@@ -17,7 +17,7 @@ Then, add it to your `gulpfile.js`:
 ```javascript
 var usemin = require('gulp-usemin');
 
-gulp.task('usemin', function(){
+gulp.task('usemin', function() {
   gulp.src('./*.html')
     .pipe(usemin({
       cssmin: false,
@@ -45,7 +45,7 @@ Blocks are expressed as:
 An example of this in completed form can be seen below:
 
 ```html
-<!-- build:css style.js -->
+<!-- build:css style.css -->
 <link rel="stylesheet" href="css/clear.css"/>
 <link rel="stylesheet" href="css/main.css"/>
 <!-- endbuild -->
@@ -62,29 +62,27 @@ An example of this in completed form can be seen below:
 
 #### cssmin
 
-Type: 'Boolean'
+Type: `Boolean`
 Default: `true`
 
 If true, minify output css.
 
 #### htmlmin
 
-Type: 'Boolean'
+Type: `Boolean`
 Default: `true`
 
 If true, minify output html.
 
 #### jsmin
 
-Type: 'Boolean'
+Type: `Boolean`
 Default: `true`
 
 If true, minify output js.
 
 
 ## Use cases
-
-### Simple one
 
 ```
 |
@@ -94,12 +92,20 @@ If true, minify output js.
 |       +- js
 |          +- foo.js
 |          +- bar.js
+|   +- css
+|       +- clear.css
+|       +- main.css
 +- dist
 ```
 
 We want to optimize `foo.js` and `bar.js` into `optimized.js`, referenced using relative path. `index.html` should contain the following block:
 
 ```
+    <!-- build:css style.css -->
+    <link rel="stylesheet" href="css/clear.css"/>
+    <link rel="stylesheet" href="css/main.css"/>
+    <!-- endbuild -->
+
     <!-- build:js js/optimized.js -->
     <script src="assets/js/foo.js"></script>
     <script src="assets/js/bar.js"></script>
@@ -115,6 +121,7 @@ gulp.task('usemin', function(){
     .pipe(gulp.dest('dist/'));
 });
 ```
+
 This will generate the following output:
 
 ```
@@ -129,4 +136,13 @@ This will generate the following output:
 |   +- index.html
 |   +- js
 |       +- optimized.js
+|   +- style.css
+```
+
+`index.html` output:
+
+```
+    <link rel="stylesheet" href="style.css"/>
+
+    <script src="js/optimized.js"></script>
 ```
