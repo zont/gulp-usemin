@@ -7,7 +7,6 @@ var uglify = require('uglify-js');
 var htmlmin = require('minimize');
 var through = require('through2');
 var gutil = require('gulp-util');
-var PluginError = gutil.PluginError;
 
 module.exports = function (options) {
 	options = options || {};
@@ -20,6 +19,13 @@ module.exports = function (options) {
 	var jsReg = /<\s*script\s+.*src\s*=\s*"([^"]+)".*><\s*\/\s*script\s*>/gi;
 	var cssReg = /<\s*link\s+.*href\s*=\s*"([^"]+)".*>/gi;
 	var mainPath, mainName;
+
+	function createFile(name, content) {
+		return new gutil.File({
+			path: name,
+			contents: new Buffer(content)
+		});
+	}
 
 	function concat(content, reg, delimiter) {
 		var paths = [];
@@ -43,10 +49,7 @@ module.exports = function (options) {
 		if (options.jsmin)
 			str = uglify.minify(str, {fromString: true}).code;
 
-		return new gutil.File({
-			path: name,
-			contents: new Buffer(str)
-		});
+		return createFile(name, str);
 	}
 
 	function processCss(content, name) {
@@ -55,10 +58,7 @@ module.exports = function (options) {
 		if (options.cssmin)
 			str = new CleanCSS({root: mainPath}).minify(str);
 
-		return new gutil.File({
-			path: name,
-			contents: new Buffer(str)
-		});
+		return createFile(name, str);
 	}
 
 	function processHtml(content, callback) {
@@ -72,15 +72,13 @@ module.exports = function (options) {
 
 				html.push(section[0]);
 
-				switch (section[1]) {
-					case 'js':
-						html.push('<script src="' + section[2] + '"></script>');
-						files.push(processJs(section[3], section[2]));
-						break;
-					case 'css':
-						html.push('<link rel="stylesheet" href="' + section[2] + '"/>');
-						files.push(processCss(section[3], section[2]));
-						break;
+				if (section[1] == 'js') {
+					html.push('<script src="' + section[2] + '"></script>');
+					files.push(processJs(section[3], section[2]));
+				}
+				else {
+					html.push('<link rel="stylesheet" href="' + section[2] + '"/>');
+					files.push(processCss(section[3], section[2]));
 				}
 			}
 			else
@@ -88,18 +86,12 @@ module.exports = function (options) {
 
 		if (options.htmlmin)
 			new htmlmin().parse(html.join(''), function(err, data) {
-				files.push(new gutil.File({
-					path: mainName,
-					contents: new Buffer(data)
-				}));
+				files.push(createFile(mainName, data));
 
 				callback(files);
 			});
 		else {
-			files.push(new gutil.File({
-				path: mainName,
-				contents: new Buffer(html.join(''))
-			}));
+			files.push(createFile(mainName, html.join('')));
 
 			callback(files);
 		}
@@ -111,7 +103,7 @@ module.exports = function (options) {
 			callback();
 		}
 		else if (file.isStream()) {
-			this.emit('error', new PluginError('gulp-usemin', 'Streams are not supported!'));
+			this.emit('error', new gutil.PluginError('gulp-usemin', 'Streams are not supported!'));
 			callback();
 		}
 		else {
