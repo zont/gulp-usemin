@@ -11,12 +11,14 @@
 		"uglify-js": "latest"
 	},
 	"devDependencies": {
-		"should": "latest",
-		"mocha": "latest",
+		"event-stream": "latest",
+		"gulp": "latest",
+		"gulp-jshint": "latest",
+		"gulp-mocha": "latest",
 		"gulp-util": "latest"
 	},
 	"scripts": {
-		"test": "./node_modules/.bin/mocha"
+		"test": "mocha"
 	},
 	"repository": {
 		"type": "git",
