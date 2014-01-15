@@ -115,18 +115,14 @@ module.exports = function (options) {
 			callback();
 		}
 		else {
-			var content = String(file.contents);
+			mainPath = file.base;
+			mainName = path.basename(file.path);
 
-			if (endReg.test(content)) {
-				mainPath = file.base;
-				mainName = path.basename(file.path);
-
-				processHtml(content, function(files) {
-					for (var i = 0; i < files.length; ++ i)
-						this.push(files[i]);
-					callback();
-				}.bind(this));
-			}
+			processHtml(String(file.contents), function(files) {
+				for (var i = 0; i < files.length; ++ i)
+					this.push(files[i]);
+				callback();
+			}.bind(this));
 		}
 	});
 };
