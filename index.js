@@ -32,7 +32,7 @@ module.exports = function (options) {
 		var buffer = [];
 
 		content
-			.replace(/<!--(?:.|\r|\n)*-->/gim, '')
+			.replace(/<!--(?:(?:.|\r|\n)*?)-->/gim, '')
 			.replace(reg, function (a, b) {
 				paths.push(path.join(mainPath, b));
 			});
