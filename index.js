@@ -14,7 +14,7 @@ module.exports = function (options) {
 	options.cssmin = options.cssmin !== false;
 	options.htmlmin = options.htmlmin !== false;
 
-	var startReg = /<!--\s*build:(css|js)\s+([^\s]+)\s*-->/gim;
+	var startReg = /<!--\s*build:(css|js)\s+(\/?([^\s]+))\s*-->/gim;
 	var endReg = /<!--\s*endbuild\s*-->/gim;
 	var jsReg = /<\s*script\s+.*src\s*=\s*"([^"]+)".*><\s*\/\s*script\s*>/gi;
 	var cssReg = /<\s*link\s+.*href\s*=\s*"([^"]+)".*>/gi;
@@ -74,11 +74,11 @@ module.exports = function (options) {
 
 				if (section[1] == 'js') {
 					html.push('<script src="' + section[2] + '"></script>');
-					files.push(processJs(section[3], section[2]));
+					files.push(processJs(section[4], section[3]));
 				}
 				else {
 					html.push('<link rel="stylesheet" href="' + section[2] + '"/>');
-					files.push(processCss(section[3], section[2]));
+					files.push(processCss(section[4], section[3]));
 				}
 			}
 			else
