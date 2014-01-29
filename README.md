@@ -39,7 +39,7 @@ Blocks are expressed as:
 ```
 
 - **type**: either `js` or `css`
-- **path**: the file path of the optimized file, the target output
+- **path**: the file path of the optimized file, the target output. Leading slash is ignored
 
 An example of this in completed form can be seen below:
 
