@@ -14,7 +14,7 @@ module.exports = function (options) {
 	options.cssmin = options.cssmin !== false;
 	options.htmlmin = options.htmlmin !== false;
 
-	var startReg = /<!--\s*build:(css|js)\s+([^\s]+)\s*-->/gim;
+	var startReg = /<!--\s*build:(css|js)\s+\/?([^\s]+)\s*-->/gim;
 	var endReg = /<!--\s*endbuild\s*-->/gim;
 	var jsReg = /<\s*script\s+.*src\s*=\s*"([^"]+)".*><\s*\/\s*script\s*>/gi;
 	var cssReg = /<\s*link\s+.*href\s*=\s*"([^"]+)".*>/gi;
