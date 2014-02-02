@@ -13,6 +13,7 @@ module.exports = function (options) {
 	options.jsmin = options.jsmin !== false;
 	options.cssmin = options.cssmin !== false;
 	options.htmlmin = options.htmlmin !== false;
+	options.resolvePath = options.resolvePath || [ '.' ];
 
 	var startReg = /<!--\s*build:(css|js)\s+(\/?([^\s]+))\s*-->/gim;
 	var endReg = /<!--\s*endbuild\s*-->/gim;
@@ -27,6 +28,17 @@ module.exports = function (options) {
 		});
 	}
 
+	function resolvePath(filename) {
+		for (var i = 0; i < options.resolvePath.length; i++) {
+			var p = path.join(options.resolvePath[i], filename);
+
+			if (fs.existsSync(p))
+				return p;
+		}
+
+		throw new gutil.PluginError('gulp-usemin', 'Could not find file: ' + filename);
+	}
+
 	function concat(content, reg, delimiter) {
 		var paths = [];
 		var buffer = [];
@@ -34,11 +46,11 @@ module.exports = function (options) {
 		content
 			.replace(/<!--(?:(?:.|\r|\n)*?)-->/gim, '')
 			.replace(reg, function (a, b) {
-				paths.push(path.join(mainPath, b));
+				paths.push(b);
 			});
 
 		for (var i = 0, l = paths.length; i < l; ++i)
-			buffer.push(fs.readFileSync(paths[i]));
+			buffer.push(fs.readFileSync(resolvePath(paths[i])));
 
 		return buffer.join(delimiter);
 	}
@@ -109,12 +121,16 @@ module.exports = function (options) {
 		else {
 			mainPath = file.base;
 			mainName = path.basename(file.path);
-
-			processHtml(String(file.contents), function(files) {
-				for (var i = 0; i < files.length; ++ i)
-					this.push(files[i]);
-				callback();
-			}.bind(this));
+			
+			try {
+				processHtml(String(file.contents), function(files) {
+					for (var i = 0; i < files.length; ++ i)
+						this.push(files[i]);
+					callback();
+				}.bind(this));
+			} catch(ex) {
+				this.emit('error', ex)
+			}
 		}
 	});
 };
