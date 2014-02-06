@@ -14,11 +14,11 @@ module.exports = function (options) {
 	options.cssmin = options.cssmin !== false;
 	options.htmlmin = options.htmlmin !== false;
 
-	var startReg = /<!--\s*build:(css|js)\s+(\/?([^\s]+))\s*-->/gim;
+	var startReg = /<!--\s*build:(css|js)(?:\(([^\)]+)\))?\s+(\/?([^\s]+))\s*-->/gim;
 	var endReg = /<!--\s*endbuild\s*-->/gim;
 	var jsReg = /<\s*script\s+.*src\s*=\s*"([^"]+)".*><\s*\/\s*script\s*>/gi;
 	var cssReg = /<\s*link\s+.*href\s*=\s*"([^"]+)".*>/gi;
-	var mainPath, mainName;
+	var mainPath, mainName, alternatePath;
 
 	function createFile(name, content) {
 		return new gutil.File({
@@ -34,7 +34,7 @@ module.exports = function (options) {
 		content
 			.replace(/<!--(?:(?:.|\r|\n)*?)-->/gim, '')
 			.replace(reg, function (a, b) {
-				paths.push(path.join(mainPath, b));
+				paths.push(path.join(alternatePath || mainPath, b));
 			});
 
 		for (var i = 0, l = paths.length; i < l; ++i)
@@ -69,16 +69,17 @@ module.exports = function (options) {
 		for (var i = 0, l = sections.length; i < l; ++i)
 			if (sections[i].match(startReg)) {
 				var section = sections[i].split(startReg);
+				alternatePath = section[2];
 
 				html.push(section[0]);
 
 				if (section[1] == 'js') {
-					html.push('<script src="' + section[2] + '"></script>');
-					files.push(processJs(section[4], section[3]));
+					html.push('<script src="' + section[3] + '"></script>');
+					files.push(processJs(section[5], section[4]));
 				}
 				else {
-					html.push('<link rel="stylesheet" href="' + section[2] + '"/>');
-					files.push(processCss(section[4], section[3]));
+					html.push('<link rel="stylesheet" href="' + section[3] + '"/>');
+					files.push(processCss(section[5], section[4]));
 				}
 			}
 			else

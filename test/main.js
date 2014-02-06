@@ -208,6 +208,26 @@ describe('gulp-usemin', function() {
 					}
 				);
 			});
+
+			it('simple with alternate path (css block)', function(done) {
+				var name = 'data/css/style.css';
+				var expectedName = 'data/css/min-style.css';
+				var exist = false;
+
+				compare(
+					'simple-css-alternate-path.html',
+					function(newFile) {
+						if (newFile.path === name) {
+							exist = true;
+							assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+						}
+					},
+					function() {
+						assert.ok(exist);
+						done();
+					}
+				);
+			});
 		});
 
 		describe('not minified CSS:', function() {
@@ -248,6 +268,25 @@ describe('gulp-usemin', function() {
 
 				compare(
 					'simple-css-path.html',
+					function(newFile) {
+						if (newFile.path === expectedName) {
+							exist = true;
+							assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+						}
+					},
+					function() {
+						assert.ok(exist);
+						done();
+					}
+				);
+			});
+
+			it('simple with alternate path (css block)', function(done) {
+				var expectedName = 'data/css/style.css';
+				var exist = false;
+
+				compare(
+					'simple-css-alternate-path.html',
 					function(newFile) {
 						if (newFile.path === expectedName) {
 							exist = true;
@@ -312,6 +351,26 @@ describe('gulp-usemin', function() {
 					}
 				);
 			});
+
+			it('simple with alternate path (js block)', function(done) {
+				var name = 'data/js/app.js';
+				var expectedName = 'data/js/min-app.js';
+				var exist = false;
+
+				compare(
+					'simple-js-alternate-path.html',
+					function(newFile) {
+						if (newFile.path === name) {
+							exist = true;
+							assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+						}
+					},
+					function() {
+						assert.ok(exist);
+						done();
+					}
+				);
+			});
 		});
 
 		describe('not minified JS:', function() {
@@ -352,6 +411,25 @@ describe('gulp-usemin', function() {
 
 				compare(
 					'simple-js-path.html',
+					function(newFile) {
+						if (newFile.path === expectedName) {
+							exist = true;
+							assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+						}
+					},
+					function() {
+						assert.ok(exist);
+						done();
+					}
+				);
+			});
+
+			it('simple with alternate path (js block)', function(done) {
+				var expectedName = 'data/js/app.js';
+				var exist = false;
+
+				compare(
+					'simple-js-alternate-path.html',
 					function(newFile) {
 						if (newFile.path === expectedName) {
 							exist = true;
