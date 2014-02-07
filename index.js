@@ -4,6 +4,7 @@ var EOL = require('os').EOL;
 
 var through = require('through2');
 var gutil = require('gulp-util');
+var rev = require('gulp-rev');
 
 module.exports = function (options) {
 	options = options || {}; // cssmin, htmlmin, jsmin
