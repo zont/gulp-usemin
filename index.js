@@ -67,7 +67,7 @@ module.exports = function (options) {
 				html.push(section[0]);
 
 				if (section[1] == 'js') {
-					var newFile = createFile(section[4], concat(section[5], jsReg, ';' + EOL + EOL), true);
+					var newFile = createFile(section[4], concat(section[5], jsReg, ';' + EOL + EOL));
 					
 					if (options.rev == true)
 					{
@@ -86,7 +86,7 @@ module.exports = function (options) {
 					filesCount++;
 				}
 				else {
-					var newFile = createFile(section[4], concat(section[5], cssReg, EOL + EOL), true);
+					var newFile = createFile(section[4], concat(section[5], cssReg, EOL + EOL));
 					
 					if (options.rev == true)
 					{
