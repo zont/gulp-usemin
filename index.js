@@ -40,7 +40,7 @@ module.exports = function (options) {
 
 	function write(files, processor, callback) {
 		if (processor) {
-			var stream = processor();
+			var stream = processor;
 			stream.on('data', callback);
 
 			files.forEach(function(file) {

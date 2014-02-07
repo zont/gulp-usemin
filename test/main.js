@@ -79,7 +79,7 @@ describe('gulp-usemin', function() {
 	describe('should work in buffer mode with', function() {
 		describe('minified HTML:', function() {
 			function compare(name, expectedName, done) {
-				var stream = usemin({htmlmin: htmlmin});
+				var stream = usemin({htmlmin: htmlmin({empty: true})});
 
 				stream.on('data', function(newFile) {
 					if (path.basename(newFile.path) === name)
@@ -161,7 +161,7 @@ describe('gulp-usemin', function() {
 
 		describe('minified CSS:', function() {
 			function compare(name, callback, end) {
-				var stream = usemin({cssmin: cssmin});
+				var stream = usemin({cssmin: cssmin()});
 
 				stream.on('data', callback);
 				stream.on('end', end);
@@ -302,7 +302,7 @@ describe('gulp-usemin', function() {
 
 		describe('minified JS:', function() {
 			function compare(name, callback, end) {
-				var stream = usemin({jsmin: jsmin});
+				var stream = usemin({jsmin: jsmin()});
 
 				stream.on('data', callback);
 				stream.on('end', end);

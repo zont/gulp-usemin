@@ -23,9 +23,9 @@ var minifyCss = require('gulp-minify-css');
 gulp.task('usemin', function() {
   gulp.src('./*.html')
     .pipe(usemin({
-      cssmin: minifyCss,
-      htmlmin: minifyHtml,
-      jsmin: uglify
+      cssmin: minifyCss(),
+      htmlmin: minifyHtml(),
+      jsmin: uglify()
     }))
     .pipe(gulp.dest('build/'));
 });
@@ -115,7 +115,7 @@ We want our files to be generated in the `dist` directory. `gulpfile.js` should 
 ```javascript
 gulp.task('usemin', function(){
   gulp.src('./app/index.html')
-    .pipe(usemin({jsmin: uglify}))
+    .pipe(usemin({jsmin: uglify()}))
     .pipe(gulp.dest('dist/'));
 });
 ```
