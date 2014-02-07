@@ -12,12 +12,12 @@ module.exports = function (options) {
 	var endReg = /<!--\s*endbuild\s*-->/gim;
 	var jsReg = /<\s*script\s+.*src\s*=\s*"([^"]+)".*><\s*\/\s*script\s*>/gi;
 	var cssReg = /<\s*link\s+.*href\s*=\s*"([^"]+)".*>/gi;
-	var mainPath, mainName, alternatePath;
+	var basePath, mainPath, mainName, alternatePath;
 	var filesCount = 0;
 
 	function createFile(name, content) {
 		return new gutil.File({
-			path: name,
+			path: path.join(path.relative(basePath, mainPath), name),
 			contents: new Buffer(content)
 		});
 	}
@@ -94,7 +94,8 @@ module.exports = function (options) {
 			callback();
 		}
 		else {
-			mainPath = file.base;
+			basePath = file.base;
+			mainPath = path.dirname(file.path);
 			mainName = path.basename(file.path);
 
 			filesCount = 1;
