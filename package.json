@@ -1,6 +1,6 @@
 {
 	"name": "gulp-usemin",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).",
 	"main": "index.js",
 	"dependencies": {
