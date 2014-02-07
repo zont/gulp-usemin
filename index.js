@@ -74,12 +74,12 @@ module.exports = function (options) {
 
 				if (section[1] == 'js') {
 					html.push('<script src="' + section[3] + '"></script>');
-					jsFiles.push(createFile(section[4], concat(section[5], jsReg, ';' + EOL + EOL)));
+					jsFiles.push(createFile(section[4], concat(section[5], jsReg, ';' + EOL + EOL), true));
 					filesCount++;
 				}
 				else {
 					html.push('<link rel="stylesheet" href="' + section[3] + '"/>');
-					cssFiles.push(createFile(section[4], concat(section[5], cssReg, EOL + EOL)));
+					cssFiles.push(createFile(section[4], concat(section[5], cssReg, EOL + EOL), true));
 					filesCount++;
 				}
 			}
