@@ -19,7 +19,7 @@ module.exports = function (options) {
 	function createFile(name, content, asset) {
 		var filepath = path.join(path.relative(basePath, mainPath), name)
 
-		if (asset === true && options.assetsDir != '')
+		if (asset === true && options.assetsDir)
 		{
 			filepath = path.relative(basePath,path.join(options.assetsDir,filepath));
 		}
@@ -108,7 +108,7 @@ module.exports = function (options) {
 						html.push('<link rel="stylesheet" href="' + section[3] + '"/>');
 					}
 
-					cssFiles.push();
+					cssFiles.push(newFile);
 					filesCount++;
 				}
 			}
