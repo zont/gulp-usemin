@@ -191,8 +191,8 @@ describe('gulp-usemin', function() {
 			});
 
 			it('simple with path (css block)', function(done) {
-				var name = 'data/css/style.css';
-				var expectedName = 'data/css/min-style.css';
+				var name = path.join('data', 'css', 'style.css');
+				var expectedName = path.join('data', 'css', 'min-style.css');
 				var exist = false;
 
 				compare(
@@ -211,8 +211,8 @@ describe('gulp-usemin', function() {
 			});
 
 			it('simple with alternate path (css block)', function(done) {
-				var name = 'data/css/style.css';
-				var expectedName = 'data/css/min-style.css';
+				var name = path.join('data', 'css', 'style.css');
+				var expectedName = path.join('data', 'css', 'min-style.css');
 				var exist = false;
 
 				compare(
@@ -262,7 +262,7 @@ describe('gulp-usemin', function() {
 			});
 
 			it('simple with path (css block)', function(done) {
-				var expectedName = 'data/css/style.css';
+				var expectedName = path.join('data', 'css', 'style.css');
 				var exist = false;
 
 				compare(
@@ -281,7 +281,7 @@ describe('gulp-usemin', function() {
 			});
 
 			it('simple with alternate path (css block)', function(done) {
-				var expectedName = 'data/css/style.css';
+				var expectedName = path.join('data', 'css', 'style.css');
 				var exist = false;
 
 				compare(
@@ -332,8 +332,8 @@ describe('gulp-usemin', function() {
 			});
 
 			it('simple with path (js block)', function(done) {
-				var name = 'data/js/app.js';
-				var expectedName = 'data/js/min-app.js';
+				var name = path.join('data', 'js', 'app.js');
+				var expectedName = path.join('data', 'js', 'min-app.js');
 				var exist = false;
 
 				compare(
@@ -352,8 +352,8 @@ describe('gulp-usemin', function() {
 			});
 
 			it('simple with alternate path (js block)', function(done) {
-				var name = 'data/js/app.js';
-				var expectedName = 'data/js/min-app.js';
+				var name = path.join('data', 'js', 'app.js');
+				var expectedName = path.join('data', 'js', 'min-app.js');
 				var exist = false;
 
 				compare(
@@ -403,7 +403,7 @@ describe('gulp-usemin', function() {
 			});
 
 			it('simple with path (js block)', function(done) {
-				var expectedName = 'data/js/app.js';
+				var expectedName = path.join('data', 'js', 'app.js');
 				var exist = false;
 
 				compare(
@@ -422,7 +422,7 @@ describe('gulp-usemin', function() {
 			});
 
 			it('simple with alternate path (js block)', function(done) {
-				var expectedName = 'data/js/app.js';
+				var expectedName = path.join('data', 'js', 'app.js');
 				var exist = false;
 
 				compare(
