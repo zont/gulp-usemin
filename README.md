@@ -2,6 +2,7 @@
 > Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).
 
 This task is designed for gulp 3.
+> Attention: v0.2.0 dont minify files by default.
 
 ## Usage
 
