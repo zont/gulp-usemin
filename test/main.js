@@ -11,6 +11,9 @@ var PassThrough = require('stream').PassThrough;
 var path = require('path');
 var usemin = require('../index');
 
+var jsmin = require('gulp-uglify');
+var htmlmin = require('gulp-minify-html');
+var cssmin = require('gulp-minify-css');
 
 function getFile(filePath) {
 	return new gutil.File({
@@ -76,7 +79,7 @@ describe('gulp-usemin', function() {
 	describe('should work in buffer mode with', function() {
 		describe('minified HTML:', function() {
 			function compare(name, expectedName, done) {
-				var stream = usemin();
+				var stream = usemin({htmlmin: htmlmin});
 
 				stream.on('data', function(newFile) {
 					if (path.basename(newFile.path) === name)
@@ -117,9 +120,7 @@ describe('gulp-usemin', function() {
 
 		describe('not minified HTML:', function() {
 			function compare(name, expectedName, done) {
-				var stream = usemin({
-					htmlmin: false
-				});
+				var stream = usemin();
 
 				stream.on('data', function(newFile) {
 					if (path.basename(newFile.path) === name)
@@ -160,7 +161,7 @@ describe('gulp-usemin', function() {
 
 		describe('minified CSS:', function() {
 			function compare(name, callback, end) {
-				var stream = usemin();
+				var stream = usemin({cssmin: cssmin});
 
 				stream.on('data', callback);
 				stream.on('end', end);
@@ -232,9 +233,7 @@ describe('gulp-usemin', function() {
 
 		describe('not minified CSS:', function() {
 			function compare(name, callback, end) {
-				var stream = usemin({
-					cssmin: false
-				});
+				var stream = usemin();
 
 				stream.on('data', callback);
 				stream.on('end', end);
@@ -303,7 +302,7 @@ describe('gulp-usemin', function() {
 
 		describe('minified JS:', function() {
 			function compare(name, callback, end) {
-				var stream = usemin();
+				var stream = usemin({jsmin: jsmin});
 
 				stream.on('data', callback);
 				stream.on('end', end);
@@ -375,9 +374,7 @@ describe('gulp-usemin', function() {
 
 		describe('not minified JS:', function() {
 			function compare(name, callback, end) {
-				var stream = usemin({
-					jsmin: false
-				});
+				var stream = usemin();
 
 				stream.on('data', callback);
 				stream.on('end', end);

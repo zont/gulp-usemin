@@ -2,23 +2,18 @@ var path = require('path');
 var fs = require('fs');
 var EOL = require('os').EOL;
 
-var CleanCSS = require('clean-css');
-var uglify = require('uglify-js');
-var htmlmin = require('minimize');
 var through = require('through2');
 var gutil = require('gulp-util');
 
 module.exports = function (options) {
-	options = options || {};
-	options.jsmin = options.jsmin !== false;
-	options.cssmin = options.cssmin !== false;
-	options.htmlmin = options.htmlmin !== false;
+	options = options || {}; // cssmin, htmlmin, jsmin
 
 	var startReg = /<!--\s*build:(css|js)(?:\(([^\)]+)\))?\s+(\/?([^\s]+))\s*-->/gim;
 	var endReg = /<!--\s*endbuild\s*-->/gim;
 	var jsReg = /<\s*script\s+.*src\s*=\s*"([^"]+)".*><\s*\/\s*script\s*>/gi;
 	var cssReg = /<\s*link\s+.*href\s*=\s*"([^"]+)".*>/gi;
 	var mainPath, mainName, alternatePath;
+	var filesCount = 0;
 
 	function createFile(name, content) {
 		return new gutil.File({
@@ -43,27 +38,24 @@ module.exports = function (options) {
 		return buffer.join(delimiter);
 	}
 
-	function processJs(content, name) {
-		var str = concat(content, jsReg, ';' + EOL + EOL);
+	function write(files, processor, callback) {
+		if (processor) {
+			var stream = processor();
+			stream.on('data', callback);
 
-		if (options.jsmin)
-			str = uglify.minify(str, {fromString: true}).code;
-
-		return createFile(name, str);
-	}
-
-	function processCss(content, name) {
-		var str = concat(content, cssReg, EOL + EOL);
-
-		if (options.cssmin)
-			str = new CleanCSS({root: mainPath}).minify(str);
-
-		return createFile(name, str);
+			files.forEach(function(file) {
+				stream.write(file);
+			});
+			stream.end();
+		}
+		else
+			files.forEach(callback);
 	}
 
 	function processHtml(content, callback) {
 		var html = [];
-		var files = [];
+		var jsFiles = [];
+		var cssFiles = [];
 		var sections = content.split(endReg);
 
 		for (var i = 0, l = sections.length; i < l; ++i)
@@ -75,27 +67,21 @@ module.exports = function (options) {
 
 				if (section[1] == 'js') {
 					html.push('<script src="' + section[3] + '"></script>');
-					files.push(processJs(section[5], section[4]));
+					jsFiles.push(createFile(section[4], concat(section[5], jsReg, ';' + EOL + EOL)));
+					filesCount++;
 				}
 				else {
 					html.push('<link rel="stylesheet" href="' + section[3] + '"/>');
-					files.push(processCss(section[5], section[4]));
+					cssFiles.push(createFile(section[4], concat(section[5], cssReg, EOL + EOL)));
+					filesCount++;
 				}
 			}
 			else
 				html.push(sections[i]);
 
-		if (options.htmlmin)
-			new htmlmin().parse(html.join(''), function(err, data) {
-				files.push(createFile(mainName, data));
-
-				callback(files);
-			});
-		else {
-			files.push(createFile(mainName, html.join('')));
-
-			callback(files);
-		}
+			write(jsFiles, options.jsmin, callback);
+			write(cssFiles, options.cssmin, callback);
+			write([createFile(mainName, html.join(''))], options.htmlmin, callback);
 	}
 
 	return through.obj(function (file, enc, callback) {
@@ -111,10 +97,13 @@ module.exports = function (options) {
 			mainPath = file.base;
 			mainName = path.basename(file.path);
 
-			processHtml(String(file.contents), function(files) {
-				for (var i = 0; i < files.length; ++ i)
-					this.push(files[i]);
-				callback();
+			filesCount = 1;
+			processHtml(String(file.contents), function(file) {
+				this.push(file);
+				filesCount--;
+
+				if (filesCount <= 0)
+					callback();
 			}.bind(this));
 		}
 	});

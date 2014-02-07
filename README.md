@@ -15,13 +15,16 @@ Then, add it to your `gulpfile.js`:
 
 ```javascript
 var usemin = require('gulp-usemin');
+var uglify = require('gulp-uglify');
+var minifyHtml = require('gulp-minify-html');
+var minifyCss = require('gulp-minify-css');
 
 gulp.task('usemin', function() {
   gulp.src('./*.html')
     .pipe(usemin({
-      cssmin: false,
-      htmlmin: false,
-      jsmin: false
+      cssmin: minifyCss,
+      htmlmin: minifyHtml,
+      jsmin: uglify
     }))
     .pipe(gulp.dest('build/'));
 });
@@ -61,22 +64,19 @@ An example of this in completed form can be seen below:
 ### Options
 
 #### cssmin
-Type: `Boolean`
-Default: `true`
+Type: `Object`
 
-If true, minify output css.
+Plugin for minify output css.
 
 #### htmlmin
-Type: `Boolean`
-Default: `true`
+Type: `Object`
 
-If true, minify output html.
+Plugin for minify output html.
 
 #### jsmin
-Type: `Boolean`
-Default: `true`
+Type: `Object`
 
-If true, minify output js.
+Plugin for minify output js.
 
 
 ## Use case
@@ -114,7 +114,7 @@ We want our files to be generated in the `dist` directory. `gulpfile.js` should 
 ```javascript
 gulp.task('usemin', function(){
   gulp.src('./app/index.html')
-    .pipe(usemin())
+    .pipe(usemin({jsmin: uglify}))
     .pipe(gulp.dest('dist/'));
 });
 ```
