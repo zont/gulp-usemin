@@ -4,7 +4,6 @@ var EOL = require('os').EOL;
 
 var through = require('through2');
 var gutil = require('gulp-util');
-var rev = require('gulp-rev');
 
 module.exports = function (options) {
 	options = options || {}; // cssmin, htmlmin, jsmin
@@ -16,16 +15,9 @@ module.exports = function (options) {
 	var basePath, mainPath, mainName, alternatePath;
 	var filesCount = 0;
 
-	function createFile(name, content, asset) {
-		var filepath = path.join(path.relative(basePath, mainPath), name)
-
-		if (asset === true && options.assetsDir)
-		{
-			filepath = path.relative(basePath,path.join(options.assetsDir,filepath));
-		}
-
+	function createFile(name, content) {
 		return new gutil.File({
-			path: filepath,
+			path: path.join(path.relative(basePath, mainPath), name),
 			contents: new Buffer(content)
 		});
 	}
