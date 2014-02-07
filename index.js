@@ -12,7 +12,7 @@ module.exports = function (options) {
 	options = options || {};
 	options.jsmin = options.jsmin !== false;
 	options.cssmin = options.cssmin !== false;
-	options.htmlmin = options.htmlmin !== false;
+	options.htmlmin = typeof options.htmlmin == 'object' ? options.htmlmin  : false;
 
 	var startReg = /<!--\s*build:(css|js)(?:\(([^\)]+)\))?\s+(\/?([^\s]+))\s*-->/gim;
 	var endReg = /<!--\s*endbuild\s*-->/gim;
@@ -85,12 +85,14 @@ module.exports = function (options) {
 			else
 				html.push(sections[i]);
 
-		if (options.htmlmin)
-			new htmlmin().parse(html.join(''), function(err, data) {
+		if (options.htmlmin !== false)
+		{
+			new htmlmin(options.htmlmin).parse(html.join(''), function(err, data) {
 				files.push(createFile(mainName, data));
 
 				callback(files);
 			});
+		}
 		else {
 			files.push(createFile(mainName, html.join('')));
 
@@ -109,7 +111,16 @@ module.exports = function (options) {
 		}
 		else {
 			mainPath = file.base;
-			mainName = path.basename(file.path);
+
+			if (file.base != path.dirname(file.path) + '/')
+			{
+				mainName = file.path.replace(file.cwd + '/', '');
+				mainName = mainName.replace(file.base +'/', '');
+			}
+			else
+			{
+				mainName = path.basename(file.path);
+			}
 
 			processHtml(String(file.contents), function(files) {
 				for (var i = 0; i < files.length; ++ i)
