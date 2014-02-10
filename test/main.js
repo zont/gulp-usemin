@@ -138,12 +138,20 @@ describe('gulp-usemin', function() {
 				compare('simple-js.html', 'simple-js.html', done);
 			});
 
+			it('simple (js block) (html minified)', function(done) {
+				compare('min-html-simple-js.html', 'min-html-simple-js.html', done);
+			});
+
 			it('simple with path (js block)', function(done) {
 				compare('simple-js-path.html', 'simple-js-path.html', done);
 			});
 
 			it('simple (css block)', function(done) {
 				compare('simple-css.html', 'simple-css.html', done);
+			});
+
+			it('simple (css block) (html minified)', function(done) {
+				compare('min-html-simple-css.html', 'min-html-simple-css.html', done);
 			});
 
 			it('simple with path (css block)', function(done) {
@@ -248,6 +256,25 @@ describe('gulp-usemin', function() {
 
 				compare(
 					'simple-css.html',
+					function(newFile) {
+						if (newFile.path === expectedName) {
+							exist = true;
+							assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+						}
+					},
+					function() {
+						assert.ok(exist);
+						done();
+					}
+				);
+			});
+
+			it('simple (css block) (minified html)', function(done) {
+				var expectedName = 'style.css';
+				var exist = false;
+
+				compare(
+					'min-html-simple-css.html',
 					function(newFile) {
 						if (newFile.path === expectedName) {
 							exist = true;
@@ -389,6 +416,25 @@ describe('gulp-usemin', function() {
 
 				compare(
 					'simple-js.html',
+					function(newFile) {
+						if (newFile.path === expectedName) {
+							exist = true;
+							assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+						}
+					},
+					function() {
+						assert.ok(exist);
+						done();
+					}
+				);
+			});
+
+			it('simple (js block) (minified html)', function(done) {
+				var expectedName = 'app.js';
+				var exist = false;
+
+				compare(
+					'min-html-simple-js.html',
 					function(newFile) {
 						if (newFile.path === expectedName) {
 							exist = true;

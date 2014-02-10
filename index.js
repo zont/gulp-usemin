@@ -8,10 +8,10 @@ var gutil = require('gulp-util');
 module.exports = function (options) {
 	options = options || {}; // cssmin, htmlmin, jsmin
 
-	var startReg = /<!--\s*build:(css|js)(?:\(([^\)]+)\))?\s+(\/?([^\s]+))\s*-->/gim;
+	var startReg = /<!--\s*build:(css|js)(?:\(([^\)]+?)\))?\s+(\/?([^\s]+?))\s*-->/gim;
 	var endReg = /<!--\s*endbuild\s*-->/gim;
-	var jsReg = /<\s*script\s+.*src\s*=\s*"([^"]+)".*><\s*\/\s*script\s*>/gi;
-	var cssReg = /<\s*link\s+.*href\s*=\s*"([^"]+)".*>/gi;
+	var jsReg = /<\s*script\s+.*?src\s*=\s*"([^"]+?)".*?><\s*\/\s*script\s*>/gi;
+	var cssReg = /<\s*link\s+.*?href\s*=\s*"([^"]+)".*?>/gi;
 	var basePath, mainPath, mainName, alternatePath;
 	var filesCount = 0;
 
