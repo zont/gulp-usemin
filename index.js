@@ -29,7 +29,7 @@ module.exports = function (options) {
 		content
 			.replace(/<!--(?:(?:.|\r|\n)*?)-->/gim, '')
 			.replace(reg, function (a, b) {
-				paths.push(path.join(alternatePath || mainPath, b));
+				paths.push(path.resolve(path.join(alternatePath || mainPath, b)));
 			});
 
 		for (var i = 0, l = paths.length; i < l; ++i)
