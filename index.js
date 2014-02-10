@@ -15,9 +15,16 @@ module.exports = function (options) {
 	var basePath, mainPath, mainName, alternatePath;
 	var filesCount = 0;
 
-	function createFile(name, content) {
+	function createFile(name, content, asset) {
+		var filepath = path.join(path.relative(basePath, mainPath), name)
+
+		if (asset === true && options.assetsDir)
+		{
+			filepath = path.relative(basePath,path.join(options.assetsDir,filepath));
+		}
+
 		return new gutil.File({
-			path: path.join(path.relative(basePath, mainPath), name),
+			path: filepath,
 			contents: new Buffer(content)
 		});
 	}
@@ -67,12 +74,12 @@ module.exports = function (options) {
 
 				if (section[1] == 'js') {
 					html.push('<script src="' + section[3] + '"></script>');
-					jsFiles.push(createFile(section[4], concat(section[5], jsReg, ';' + EOL + EOL)));
+					jsFiles.push(createFile(section[4], concat(section[5], jsReg, ';' + EOL + EOL), true));
 					filesCount++;
 				}
 				else {
 					html.push('<link rel="stylesheet" href="' + section[3] + '"/>');
-					cssFiles.push(createFile(section[4], concat(section[5], cssReg, EOL + EOL)));
+					cssFiles.push(createFile(section[4], concat(section[5], cssReg, EOL + EOL), true));
 					filesCount++;
 				}
 			}
