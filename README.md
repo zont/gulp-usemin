@@ -2,7 +2,7 @@
 > Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).
 
 This task is designed for gulp 3.
-> Attention: v0.2.0 dont minify files by default.
+> Attention: v0.2.0 does not minify the files by default.
 
 ## Usage
 
@@ -144,3 +144,35 @@ This will generate the following output:
 
     <script src="js/optimized.js"></script>
 ```
+
+## Changelog
+
+#####0.2.2
+- allow gulp-usemin to work with minified source HTML (by CWSpear)
+- fixed alternate path bug (by CWSpear)
+- add assetDir option (by pursual)
+- add rev option (by pursual)
+
+#####0.2.1
+- fixed subfolders bug
+
+#####0.2.0
+- no minification by default. New options API
+
+#####0.1.4
+- add alternate search path support
+
+#####0.1.3
+- add support for absolute URLs (by vasa-chi)
+
+#####0.1.1
+- fixed aggressive replace comments
+
+#####0.1.0
+- fixed some bugs. Add tests.
+
+#####0.0.2
+- add minification by default
+
+#####0.0.1
+- initial release
