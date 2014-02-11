@@ -4,6 +4,7 @@ var EOL = require('os').EOL;
 
 var through = require('through2');
 var gutil = require('gulp-util');
+var rev = require('gulp-rev');
 
 module.exports = function (options) {
 	options = options || {}; // cssmin, htmlmin, jsmin
@@ -73,13 +74,39 @@ module.exports = function (options) {
 				html.push(section[0]);
 
 				if (section[1] == 'js') {
-					html.push('<script src="' + section[3] + '"></script>');
-					jsFiles.push(createFile(section[4], concat(section[5], jsReg, ';' + EOL + EOL), true));
+					var newFile = createFile(section[4], concat(section[5], jsReg, ';' + EOL + EOL), true);
+					if (options.rev === true)
+					{
+						var stream = rev();
+						stream.write(newFile);
+						stream.end();
+						html.push('<script src="' + section[3].replace(path.basename(section[3]), path.basename(newFile.path)) + '"></script>');
+					}
+					else
+					{
+						html.push('<script src="' + section[3] + '"></script>');
+					}
+
+					jsFiles.push(newFile);
 					filesCount++;
 				}
-				else {
-					html.push('<link rel="stylesheet" href="' + section[3] + '"/>');
-					cssFiles.push(createFile(section[4], concat(section[5], cssReg, EOL + EOL), true));
+				else
+				{
+					var newFile = createFile(section[4], concat(section[5], cssReg, EOL + EOL), true);
+
+					if (options.rev === true)
+					{
+						var stream = rev();
+						stream.write(newFile);
+						stream.end();
+						html.push('<link rel="stylesheet" href="' + section[3].replace(path.basename(section[3]), path.basename(newFile.path)) + '"/>');
+					}
+					else
+					{
+						html.push('<link rel="stylesheet" href="' + section[3] + '"/>');
+					}
+
+					cssFiles.push(newFile);
 					filesCount++;
 				}
 			}
