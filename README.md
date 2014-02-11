@@ -79,6 +79,17 @@ Type: `Object`
 
 Plugin for minify output js.
 
+#### assetDir
+Type: `String`
+
+Alternate search path for assets.
+
+#### rev
+Type: `Boolean`
+Default: false
+
+If true add rev support.
+
 
 ## Use case
 
