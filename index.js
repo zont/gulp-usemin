@@ -75,7 +75,7 @@ module.exports = function (options) {
 
 				if (section[1] == 'js') {
 					var newFile = createFile(section[4], concat(section[5], jsReg, ';' + EOL + EOL), true);
-					if (options.rev == true)
+					if (options.rev === true)
 					{
 						var stream = rev();
 						stream.write(newFile);
@@ -94,12 +94,11 @@ module.exports = function (options) {
 				{
 					var newFile = createFile(section[4], concat(section[5], cssReg, EOL + EOL), true);
 
-					if (options.rev == true)
+					if (options.rev === true)
 					{
 						var stream = rev();
 						stream.write(newFile);
 						stream.end();
-
 						html.push('<link rel="stylesheet" href="' + section[3].replace(path.basename(section[3]), path.basename(newFile.path)) + '"/>');
 					}
 					else
