@@ -79,16 +79,16 @@ Type: `Object`
 
 Plugin for minify output js.
 
-#### assetDir
+#### assetsDir
 Type: `String`
 
-Alternate search path for assets.
+Alternate root path for assets. New concated js and css files will be written to the path specified in the build block, relative to this path. Currently asset files are also returned in the stream.
 
 #### rev
 Type: `Boolean`
 Default: false
 
-If true add rev support.
+If true use gulp-rev to revision and rename the asset files. The new asset file names will automatically be used in the html tags.
 
 
 ## Use case
