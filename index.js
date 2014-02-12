@@ -48,13 +48,13 @@ module.exports = function (options) {
 
 	function write(files, processor, callback) {
 		if (processor) {
-			var stream = processor;
-			stream.on('data', callback);
+			processor.on('data', callback);
 
 			files.forEach(function(file) {
-				stream.write(file);
+				processor.write(file);
 			});
-			stream.end();
+
+			processor.removeListener('data', callback);
 		}
 		else
 			files.forEach(callback);
