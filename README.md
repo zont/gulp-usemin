@@ -158,6 +158,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.2.3
+- fixed html minify bug
+
 #####0.2.2
 - allow gulp-usemin to work with minified source HTML (by CWSpear)
 - fixed alternate path bug (by CWSpear)
