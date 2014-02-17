@@ -14,6 +14,7 @@ var usemin = require('../index');
 var jsmin = require('gulp-uglify');
 var htmlmin = require('gulp-minify-html');
 var cssmin = require('gulp-minify-css');
+var rev = require('gulp-rev');
 
 function getFile(filePath) {
 	return new gutil.File({
@@ -60,6 +61,7 @@ describe('gulp-usemin', function() {
 			var stream = usemin();
 			var content = '<div>content</div>';
 			var fakeFile = new gutil.File({
+				path: 'test.file',
 				contents: new Buffer(content)
 			});
 
@@ -79,7 +81,7 @@ describe('gulp-usemin', function() {
 	describe('should work in buffer mode with', function() {
 		describe('minified HTML:', function() {
 			function compare(name, expectedName, done) {
-				var stream = usemin({htmlmin: htmlmin({empty: true})});
+				var stream = usemin({html: [htmlmin({empty: true})]});
 
 				stream.on('data', function(newFile) {
 					if (path.basename(newFile.path) === name)
@@ -169,7 +171,7 @@ describe('gulp-usemin', function() {
 
 		describe('minified CSS:', function() {
 			function compare(name, callback, end) {
-				var stream = usemin({cssmin: cssmin()});
+				var stream = usemin({css: ['concat', cssmin()]});
 
 				stream.on('data', callback);
 				stream.on('end', end);
@@ -329,7 +331,7 @@ describe('gulp-usemin', function() {
 
 		describe('minified JS:', function() {
 			function compare(name, callback, end) {
-				var stream = usemin({jsmin: jsmin()});
+				var stream = usemin({js: [jsmin()]});
 
 				stream.on('data', callback);
 				stream.on('end', end);
@@ -485,6 +487,52 @@ describe('gulp-usemin', function() {
 					}
 				);
 			});
+		});
+
+		it('many blocks', function(done) {
+			var stream = usemin({
+				css1: ['concat', cssmin()],
+				js1: [jsmin(), 'concat', rev()]
+			});
+
+			var nameCss = path.join('data', 'css', 'style.css');
+			var expectedNameCss = path.join('data', 'css', 'min-style.css');
+			var nameJs = path.join('data', 'js', 'app.js');
+			var expectedNameJs = path.join('data', 'js', 'app.js');
+			var nameJs1 = 'app1';
+			var expectedNameJs1 = path.join('data', 'js', 'app_min_concat.js');
+			var cssExist = false;
+			var jsExist = false;
+			var js1Exist = false;
+			var htmlExist = false;
+
+			stream.on('data', function(newFile) {
+				if (newFile.path === nameCss) {
+					cssExist = true;
+					assert.equal(String(getExpected(expectedNameCss).contents), String(newFile.contents));
+				}
+				else if (newFile.path === nameJs) {
+					jsExist = true;
+					assert.equal(String(getExpected(expectedNameJs).contents), String(newFile.contents));
+				}
+				else if (newFile.path.indexOf(nameJs1) != -1) {
+					js1Exist = true;
+					assert.equal(String(getExpected(expectedNameJs1).contents), String(newFile.contents));
+				}
+				else {
+					htmlExist = true;
+				}
+			});
+			stream.on('end', function() {
+				assert.ok(cssExist);
+				assert.ok(jsExist);
+				assert.ok(js1Exist);
+				assert.ok(htmlExist);
+				done();
+			});
+
+			stream.write(getFixture('many-blocks.html'));
+			stream.end();
 		});
 	});
 });

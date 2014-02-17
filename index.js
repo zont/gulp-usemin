@@ -4,66 +4,103 @@ var EOL = require('os').EOL;
 
 var through = require('through2');
 var gutil = require('gulp-util');
-var rev = require('gulp-rev');
 
-module.exports = function (options) {
-	options = options || {}; // cssmin, htmlmin, jsmin
+module.exports = function(options) {
+	options = options || {};
 
-	var startReg = /<!--\s*build:(css|js)(?:\(([^\)]+?)\))?\s+(\/?([^\s]+?))\s*-->/gim;
+	var startReg = /<!--\s*build:(\w+)(?:\(([^\)]+?)\))?\s+(\/?([^\s]+?))\s*-->/gim;
 	var endReg = /<!--\s*endbuild\s*-->/gim;
 	var jsReg = /<\s*script\s+.*?src\s*=\s*"([^"]+?)".*?><\s*\/\s*script\s*>/gi;
 	var cssReg = /<\s*link\s+.*?href\s*=\s*"([^"]+)".*?>/gi;
 	var basePath, mainPath, mainName, alternatePath;
-	var filesCount = 0;
 
-	function createFile(name, content, asset) {
-		var filepath = path.join(path.relative(basePath, mainPath), name)
-
-		if (asset === true && options.assetsDir)
-		{
-			filepath = path.relative(basePath,path.join(options.assetsDir,filepath));
-		}
-
+	function createFile(name, content) {
 		return new gutil.File({
-			path: filepath,
+			path: path.join(path.relative(basePath, mainPath), name),
 			contents: new Buffer(content)
-		});
+		})
 	}
 
-	function concat(content, reg, delimiter) {
+	function getBlockType(content) {
+		return jsReg.test(content) ? 'js' : 'css';
+	}
+
+	function getFiles(content, reg) {
 		var paths = [];
-		var buffer = [];
+		var files = [];
 
 		content
 			.replace(/<!--(?:(?:.|\r|\n)*?)-->/gim, '')
 			.replace(reg, function (a, b) {
-				paths.push(path.resolve(path.join(alternatePath || mainPath, b)));
+				var filePath = path.resolve(path.join(alternatePath || mainPath, b));
+
+				if (options.assetsDir)
+					filePath = path.relative(basePath, path.join(options.assetsDir, filePath));
+
+				paths.push(filePath);
 			});
 
 		for (var i = 0, l = paths.length; i < l; ++i)
-			buffer.push(fs.readFileSync(paths[i]));
+			files.push(new gutil.File({
+				path: paths[i],
+				contents: fs.readFileSync(paths[i])
+			}));
 
-		return buffer.join(delimiter);
+		return files;
 	}
 
-	function write(files, processor, callback) {
-		if (processor) {
-			processor.on('data', callback);
+	function concat(files, name) {
+		var buffer = [];
 
-			files.forEach(function(file) {
-				processor.write(file);
-			});
+		files.forEach(function(file) {
+			buffer.push(String(file.contents));
+		});
 
-			processor.removeListener('data', callback);
+		return createFile(name, buffer.join(EOL));
+	}
+
+	function processTask(index, tasks, name, files, callback) {
+		if (tasks[index] == 'concat') {
+			var newFile = concat(files, name);
+
+			if (tasks[++index])
+				processTask(index, tasks, name, [newFile], callback);
+			else
+				callback(newFile);
 		}
-		else
-			files.forEach(callback);
+		else {
+			var stream = tasks[index];
+			var count = files.length;
+			var newFiles = [];
+
+			function write(file) {
+				newFiles.push(file);
+				if (--count <= 0) {
+					if (tasks[++index])
+						processTask(index, tasks, name, newFiles, callback);
+					else
+						callback(newFiles[0]);
+				}
+			}
+
+			stream.on('data', write);
+			files.forEach(function(file) {
+				stream.write(file);
+			});
+			stream.removeListener('data', write);
+		}
 	}
 
-	function processHtml(content, callback) {
+	function process(name, files, pipelineId, callback) {
+		var tasks = options[pipelineId] || [];
+		if (tasks.indexOf('concat') == -1)
+			tasks.unshift('concat');
+
+		processTask(0, tasks, name, files, callback);
+	}
+
+	function processHtml(content, push, callback) {
 		var html = [];
-		var jsFiles = [];
-		var cssFiles = [];
 		var sections = content.split(endReg);
 
 		for (var i = 0, l = sections.length; i < l; ++i)
@@ -73,52 +110,27 @@ module.exports = function (options) {
 
 				html.push(section[0]);
 
-				if (section[1] == 'js') {
-					var newFile = createFile(section[4], concat(section[5], jsReg, ';' + EOL + EOL), true);
-					if (options.rev === true)
-					{
-						var stream = rev();
-						stream.write(newFile);
-						stream.end();
-						html.push('<script src="' + section[3].replace(path.basename(section[3]), path.basename(newFile.path)) + '"></script>');
-					}
-					else
-					{
-						html.push('<script src="' + section[3] + '"></script>');
-					}
-
-					jsFiles.push(newFile);
-					filesCount++;
-				}
+				if (getBlockType(section[5]) == 'js')
+					process(section[4], getFiles(section[5], jsReg), section[1], function(name, file) {
+						push(file);
+						html.push('<script src="' + name.replace(path.basename(name), path.basename(file.path)) + '"></script>');
+					}.bind(this, section[3]));
 				else
-				{
-					var newFile = createFile(section[4], concat(section[5], cssReg, EOL + EOL), true);
-
-					if (options.rev === true)
-					{
-						var stream = rev();
-						stream.write(newFile);
-						stream.end();
-						html.push('<link rel="stylesheet" href="' + section[3].replace(path.basename(section[3]), path.basename(newFile.path)) + '"/>');
-					}
-					else
-					{
-						html.push('<link rel="stylesheet" href="' + section[3] + '"/>');
-					}
-
-					cssFiles.push(newFile);
-					filesCount++;
-				}
+					process(section[4], getFiles(section[5], cssReg), section[1], function(name, file) {
+						push(file);
+						html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"/>');
+					}.bind(this, section[3]));
 			}
 			else
 				html.push(sections[i]);
 
-			write(jsFiles, options.jsmin, callback);
-			write(cssFiles, options.cssmin, callback);
-			write([createFile(mainName, html.join(''))], options.htmlmin, callback);
+		process(mainName, [createFile(mainName, html.join(''))], 'html', function(file) {
+			push(file);
+			callback();
+		});
 	}
 
-	return through.obj(function (file, enc, callback) {
+	return through.obj(function(file, enc, callback) {
 		if (file.isNull()) {
 			this.push(file); // Do nothing if no contents
 			callback();
@@ -132,14 +144,7 @@ module.exports = function (options) {
 			mainPath = path.dirname(file.path);
 			mainName = path.basename(file.path);
 
-			filesCount = 1;
-			processHtml(String(file.contents), function(file) {
-				this.push(file);
-				filesCount--;
-
-				if (filesCount <= 0)
-					callback();
-			}.bind(this));
+			processHtml(String(file.contents), this.push.bind(this), callback);
 		}
 	});
 };

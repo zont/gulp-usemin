@@ -1,3 +1,2 @@
-var sample = 111;;
-
+var sample = 111;
 console.log(sample);

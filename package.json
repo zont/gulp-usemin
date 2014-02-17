@@ -5,8 +5,7 @@
 	"main": "index.js",
 	"dependencies": {
 		"gulp-util": "latest",
-		"through2": "latest",
-		"gulp-rev": "latest"
+		"through2": "latest"
 	},
 	"devDependencies": {
 		"event-stream": "latest",
@@ -16,7 +15,8 @@
 		"gulp-util": "latest",
 		"gulp-uglify": "latest",
 		"gulp-minify-html": "latest",
-		"gulp-minify-css": "latest"
+		"gulp-minify-css": "latest",
+		"gulp-rev": "latest"
 	},
 	"scripts": {
 		"test": "mocha"
