@@ -2,7 +2,7 @@
 > Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).
 
 This task is designed for gulp 3.
-> Attention: v0.2.0 does not minify the files by default.
+> Attention: v0.3.0 options does not compatible with v0.2.0.
 
 ## Usage
 
@@ -19,13 +19,14 @@ var usemin = require('gulp-usemin');
 var uglify = require('gulp-uglify');
 var minifyHtml = require('gulp-minify-html');
 var minifyCss = require('gulp-minify-css');
+var rev = require('gulp-rev');
 
 gulp.task('usemin', function() {
   gulp.src('./*.html')
     .pipe(usemin({
-      cssmin: minifyCss(),
-      htmlmin: minifyHtml(),
-      jsmin: uglify()
+      css: [minifyCss(), 'concat'],
+      html: [minifyHtml({empty: true})],
+      js: [uglify(), rev()]
     }))
     .pipe(gulp.dest('build/'));
 });
@@ -37,12 +38,12 @@ gulp.task('usemin', function() {
 Blocks are expressed as:
 
 ```html
-<!-- build:<type>(alternate search path) <path> -->
+<!-- build:<pipelineId>(alternate search path) <path> -->
 ... HTML Markup, list of script / link tags.
 <!-- endbuild -->
 ```
 
-- **type**: either `js` or `css`
+- **pipelineId**: pipeline id for options
 - **alternate search path**: (optional) By default the input files are relative to the treated file. Alternate search path allows one to change that
 - **path**: the file path of the optimized file, the target output
 
@@ -54,7 +55,12 @@ An example of this in completed form can be seen below:
 <link rel="stylesheet" href="css/main.css"/>
 <!-- endbuild -->
 
-<!-- build:js js/app.js -->
+<!-- build:js js/lib.js -->
+<script src="../lib/angular-min.js"></script>
+<script src="../lib/angular-animate-min.js"></script>
+<!-- endbuild -->
+
+<!-- build:js1 js/app.js -->
 <script src="js/app.js"></script>
 <script src="js/controllers/thing-controller.js"></script>
 <script src="js/models/thing-model.js"></script>
@@ -64,31 +70,15 @@ An example of this in completed form can be seen below:
 
 ### Options
 
-#### cssmin
-Type: `Object`
-
-Plugin for minify output css.
-
-#### htmlmin
-Type: `Object`
-
-Plugin for minify output html.
-
-#### jsmin
-Type: `Object`
-
-Plugin for minify output js.
-
 #### assetsDir
 Type: `String`
 
 Alternate root path for assets. New concated js and css files will be written to the path specified in the build block, relative to this path. Currently asset files are also returned in the stream.
 
-#### rev
-Type: `Boolean`
-Default: false
+#### any pipelineId
+Type: `Array`
 
-If true use gulp-rev to revision and rename the asset files. The new asset file names will automatically be used in the html tags.
+If exist used for modify files. If does not contain string 'concat', then it added as first member of pipeline
 
 
 ## Use case
@@ -126,7 +116,10 @@ We want our files to be generated in the `dist` directory. `gulpfile.js` should 
 ```javascript
 gulp.task('usemin', function(){
   gulp.src('./app/index.html')
-    .pipe(usemin({jsmin: uglify()}))
+    .pipe(usemin({
+      js: [uglify()]
+      // in this case css will be only concatenated (like css: ['concat']).
+    }))
     .pipe(gulp.dest('dist/'));
 });
 ```
@@ -157,6 +150,9 @@ This will generate the following output:
 ```
 
 ## Changelog
+
+#####0.3.0
+- new version of options
 
 #####0.2.3
 - fixed html minify bug
