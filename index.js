@@ -60,27 +60,16 @@ module.exports = function(options) {
 	}
 
 	function processTask(index, tasks, name, files, callback) {
-		if (tasks[index] == 'concat') {
-			var newFile = concat(files, name);
+		var newFiles = [];
 
-			if (tasks[++index])
-				processTask(index, tasks, name, [newFile], callback);
-			else
-				callback(newFile);
+		if (tasks[index] == 'concat') {
+			newFiles = [concat(files, name)];
 		}
 		else {
 			var stream = tasks[index];
-			var count = files.length;
-			var newFiles = [];
 
 			function write(file) {
 				newFiles.push(file);
-				if (--count <= 0) {
-					if (tasks[++index])
-						processTask(index, tasks, name, newFiles, callback);
-					else
-						callback(newFiles[0]);
-				}
 			}
 
 			stream.on('data', write);
@@ -89,6 +78,11 @@ module.exports = function(options) {
 			});
 			stream.removeListener('data', write);
 		}
+
+		if (tasks[++index])
+			processTask(index, tasks, name, newFiles, callback);
+		else
+			newFiles.forEach(callback);
 	}
 
 	function process(name, files, pipelineId, callback) {
@@ -113,7 +107,8 @@ module.exports = function(options) {
 				if (getBlockType(section[5]) == 'js')
 					process(section[4], getFiles(section[5], jsReg), section[1], function(name, file) {
 						push(file);
-						html.push('<script src="' + name.replace(path.basename(name), path.basename(file.path)) + '"></script>');
+						if (path.extname(file.path) == '.js')
+							html.push('<script src="' + name.replace(path.basename(name), path.basename(file.path)) + '"></script>');
 					}.bind(this, section[3]));
 				else
 					process(section[4], getFiles(section[5], cssReg), section[1], function(name, file) {
