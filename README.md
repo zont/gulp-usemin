@@ -151,6 +151,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.1
+- fixed fails to create source map files by uglify({outSourceMap: true})
+
 #####0.3.0
 - new version of options
 
