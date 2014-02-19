@@ -35,7 +35,7 @@ module.exports = function(options) {
 				var filePath = path.resolve(path.join(alternatePath || mainPath, b));
 
 				if (options.assetsDir)
-					filePath = path.relative(basePath, path.join(options.assetsDir, filePath));
+					filePath = path.resolve(path.join(options.assetsDir, path.relative(basePath, filePath)));
 
 				paths.push(filePath);
 			});

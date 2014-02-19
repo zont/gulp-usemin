@@ -534,5 +534,37 @@ describe('gulp-usemin', function() {
 			stream.write(getFixture('many-blocks.html'));
 			stream.end();
 		});
+
+		describe('assetsDir option:', function() {
+			function compare(assetsDir, done) {
+				var stream = usemin({assetsDir: assetsDir});
+				var expectedName = 'style.css';
+				var exist = false;
+				var callback = function(newFile) {
+					if (newFile.path === expectedName) {
+						exist = true;
+						assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+					}
+				};
+				var end = function() {
+					assert.ok(exist);
+					done();
+				};
+
+				stream.on('data', callback);
+				stream.on('end', end);
+
+				stream.write(getFixture('simple-css.html'));
+				stream.end();
+			}
+
+			it('absolute path', function(done) {
+				compare(path.join(process.cwd(), 'test', 'fixtures'), done);
+			});
+
+			it('relative path', function(done) {
+				compare(path.join('test', 'fixtures'), done);
+			});
+		});
 	});
 });
