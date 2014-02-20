@@ -152,7 +152,7 @@ This will generate the following output:
 ## Changelog
 
 #####0.3.2
-- fixed assetDir option (by rovjuvano)
+- fixed assetsDir option (by rovjuvano)
 
 #####0.3.1
 - fixed fails to create source map files by uglify({outSourceMap: true})
@@ -166,7 +166,7 @@ This will generate the following output:
 #####0.2.2
 - allow gulp-usemin to work with minified source HTML (by CWSpear)
 - fixed alternate path bug (by CWSpear)
-- add assetDir option (by pursual)
+- add assetsDir option (by pursual)
 - add rev option (by pursual)
 
 #####0.2.1
