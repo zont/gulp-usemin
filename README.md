@@ -151,6 +151,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.2
+- fixed assetDir option (by rovjuvano)
+
 #####0.3.1
 - fixed fails to create source map files by uglify({outSourceMap: true})
 
