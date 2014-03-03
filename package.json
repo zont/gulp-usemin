@@ -5,7 +5,8 @@
 	"main": "index.js",
 	"dependencies": {
 		"gulp-util": "latest",
-		"through2": "latest"
+		"through2": "latest",
+		"glob": "latest"
 	},
 	"devDependencies": {
 		"event-stream": "latest",
