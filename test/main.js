@@ -167,6 +167,10 @@ describe('gulp-usemin', function() {
 			it('complex with path (css + js)', function(done) {
 				compare('complex-path.html', 'complex-path.html', done);
 			});
+
+			it('multiple alternative paths', function(done) {
+				compare('multiple-alternative-paths.html', 'multiple-alternative-paths.html', done);
+			});
 		});
 
 		describe('minified CSS:', function() {
