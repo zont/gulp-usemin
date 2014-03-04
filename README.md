@@ -151,6 +151,10 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.3
+- fixed dependencies
+- Add support for multiple alternative paths (by peleteiro)
+
 #####0.3.2
 - fixed assetsDir option (by rovjuvano)
 

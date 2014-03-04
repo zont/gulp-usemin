@@ -1,23 +1,23 @@
 {
 	"name": "gulp-usemin",
-	"version": "0.3.2",
+	"version": "0.3.3",
 	"description": "Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).",
 	"main": "index.js",
 	"dependencies": {
-		"gulp-util": "latest",
-		"through2": "latest",
-		"glob": "latest"
+		"gulp-util": "~2.2.14",
+		"through2": "~0.4.1",
+		"glob": "~3.2.9"
 	},
 	"devDependencies": {
-		"event-stream": "latest",
-		"gulp": "latest",
-		"gulp-jshint": "latest",
-		"gulp-mocha": "latest",
-		"gulp-util": "latest",
-		"gulp-uglify": "latest",
-		"gulp-minify-html": "latest",
-		"gulp-minify-css": "latest",
-		"gulp-rev": "latest"
+		"event-stream": "~3.1.0",
+		"gulp": "~3.5.5",
+		"gulp-jshint": "~1.5.0",
+		"gulp-mocha": "~0.4.1",
+		"gulp-util": "~2.2.14",
+		"gulp-uglify": "~0.2.1",
+		"gulp-minify-html": "~0.1.1",
+		"gulp-minify-css": "~0.3.0",
+		"gulp-rev": "~0.2.1"
 	},
 	"scripts": {
 		"test": "mocha"
