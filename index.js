@@ -4,6 +4,7 @@ var EOL = require('os').EOL;
 
 var through = require('through2');
 var gutil = require('gulp-util');
+var glob = require('glob');
 
 module.exports = function(options) {
 	options = options || {};
@@ -40,11 +41,13 @@ module.exports = function(options) {
 				paths.push(filePath);
 			});
 
-		for (var i = 0, l = paths.length; i < l; ++i)
+		for (var i = 0, l = paths.length; i < l; ++i) {
+			var filepath = glob.sync(paths[i])[0];
 			files.push(new gutil.File({
-				path: paths[i],
-				contents: fs.readFileSync(paths[i])
+				path: filepath,
+				contents: fs.readFileSync(filepath)
 			}));
+		}
 
 		return files;
 	}
