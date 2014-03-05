@@ -109,12 +109,23 @@ module.exports = function(options) {
 
 				if (getBlockType(section[5]) == 'js')
 					process(section[4], getFiles(section[5], jsReg), section[1], function(name, file) {
-						push(file);
-						if (path.extname(file.path) == '.js')
-							html.push('<script src="' + name.replace(path.basename(name), path.basename(file.path)) + '"></script>');
+                                        var prefile = file;
+                                        var fnameparts = file.path.split('?');
+                                        prefile.path = fnameparts[0];
+                                        var postfix = (fnameparts.length > 1) ? '?' + fnameparts[1] : '';
+
+                                        push(prefile);
+                                        if(path.extname(prefile.path) == '.js'){
+                                          html.push('<script src="' + name.replace(path.basename(name), path.basename(prefile.path)) + postfix + '"></script>');
+                                        }
 					}.bind(this, section[3]));
 				else
 					process(section[4], getFiles(section[5], cssReg), section[1], function(name, file) {
+                                           var prefile = file;
+                                           var fnameparts = file.path.split('?');
+                                           prefile.path = fnameparts[0];
+                                           var postfix = (fnameparts.length > 1) ? '?' + fnameparts[1] : '';
+
 						push(file);
 						html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"/>');
 					}.bind(this, section[3]));
