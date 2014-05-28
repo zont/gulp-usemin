@@ -1,3 +1,6 @@
+"use strict";
+/*jslint node: true */
+
 var path = require('path');
 var fs = require('fs');
 var EOL = require('os').EOL;
@@ -16,10 +19,19 @@ module.exports = function(options) {
 	var basePath, mainPath, mainName, alternatePath;
 
 	function createFile(name, content) {
-		return new gutil.File({
-			path: path.join(path.relative(basePath, mainPath), name),
-			contents: new Buffer(content)
-		})
+        
+        //Use relative path in default case
+        var filePath = path.join(path.relative(basePath, mainPath), name);
+
+        // If name is absolute path to public (start with '/')
+        if (/^\//.test(name)) filePath = name.replace(/^(\/)/, '');
+
+        // Create file and returns stream
+        return new gutil.File({
+            path: filePath,
+            contents: new Buffer(content)
+        });
+        
 	}
 
 	function getBlockType(content) {
@@ -74,9 +86,9 @@ module.exports = function(options) {
 		else {
 			var stream = tasks[index];
 
-			function write(file) {
+			var write = function(file) {
 				newFiles.push(file);
-			}
+			};
 
 			stream.on('data', write);
 			files.forEach(function(file) {
@@ -111,13 +123,13 @@ module.exports = function(options) {
 				html.push(section[0]);
 
 				if (getBlockType(section[5]) == 'js')
-					process(section[4], getFiles(section[5], jsReg), section[1], function(name, file) {
+					process(section[3], getFiles(section[5], jsReg), section[1], function(name, file) {
 						push(file);
 						if (path.extname(file.path) == '.js')
 							html.push('<script src="' + name.replace(path.basename(name), path.basename(file.path)) + '"></script>');
 					}.bind(this, section[3]));
 				else
-					process(section[4], getFiles(section[5], cssReg), section[1], function(name, file) {
+					process(section[3], getFiles(section[5], cssReg), section[1], function(name, file) {
 						push(file);
 						html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"/>');
 					}.bind(this, section[3]));
