@@ -13,6 +13,8 @@ module.exports = function(options) {
 	var endReg = /<!--\s*endbuild\s*-->/gim;
 	var jsReg = /<\s*script\s+.*?src\s*=\s*"([^"]+?)".*?><\s*\/\s*script\s*>/gi;
 	var cssReg = /<\s*link\s+.*?href\s*=\s*"([^"]+)".*?>/gi;
+	var startCondReg = /<!--\[[^\]]+\]>/im;
+	var endCondReg = /<!\[endif\]-->/im;
 	var basePath, mainPath, mainName, alternatePath;
 
 	function createFile(name, content) {
@@ -110,6 +112,11 @@ module.exports = function(options) {
 
 				html.push(section[0]);
 
+				var startCondLine = section[5].match(startCondReg);
+				var endCondLine = section[5].match(endCondReg);
+				if (startCondLine && endCondLine)
+					html.push(startCondLine[0]);
+
 				if (getBlockType(section[5]) == 'js')
 					process(section[4], getFiles(section[5], jsReg), section[1], function(name, file) {
 						push(file);
@@ -121,6 +128,9 @@ module.exports = function(options) {
 						push(file);
 						html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"/>');
 					}.bind(this, section[3]));
+
+				if (startCondLine && endCondLine)
+					html.push(endCondLine[0]);
 			}
 			else
 				html.push(sections[i]);
