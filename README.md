@@ -151,6 +151,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.5
+- Support for conditional comments inside build blocks (by simplydenis)
+
 #####0.3.4
 - When a file does not exist an error containing the missing path is thrown
 
