@@ -570,5 +570,34 @@ describe('gulp-usemin', function() {
 				compare(path.join('test', 'fixtures'), done);
 			});
 		});
+
+		describe('conditional comments:', function() {
+			function compare(name, expectedName, done) {
+				var stream = usemin();
+
+				stream.on('data', function(newFile) {
+					if (path.basename(newFile.path) === name)
+						assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+				});
+				stream.on('end', function() {
+					done();
+				});
+
+				stream.write(getFixture(name));
+				stream.end();
+			}
+
+			it('conditional (js block)', function(done) {
+				compare('conditional-js.html', 'conditional-js.html', done);
+			});
+
+			it('conditional (css block)', function(done) {
+				compare('conditional-css.html', 'conditional-css.html', done);
+			});
+
+			it('conditional (css + js)', function(done) {
+				compare('conditional-complex.html', 'conditional-complex.html', done);
+			});
+		});
 	});
 });
