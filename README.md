@@ -2,7 +2,7 @@
 > Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).
 
 This task is designed for gulp 3.
-> Attention: v0.3.0 options does not compatible with v0.2.0.
+> Attention: v0.3.0 options is not compatible with v0.2.0.
 
 ## Usage
 
