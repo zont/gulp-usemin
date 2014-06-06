@@ -33,7 +33,6 @@ module.exports = function(options) {
 		var files = [];
 
 		content
-			.replace(/<!--(?:(?:.|\r|\n)*?)-->/gim, '')
 			.replace(reg, function (a, b) {
 				var filePath = path.resolve(path.join(alternatePath || mainPath, b));
 
