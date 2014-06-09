@@ -13,8 +13,8 @@ module.exports = function(options) {
 	var endReg = /<!--\s*endbuild\s*-->/gim;
 	var jsReg = /<\s*script\s+.*?src\s*=\s*"([^"]+?)".*?><\s*\/\s*script\s*>/gi;
 	var cssReg = /<\s*link\s+.*?href\s*=\s*"([^"]+)".*?>/gi;
-	var startCondReg = /<!--\[[^\]]+\]>/im;
-	var endCondReg = /<!\[endif\]-->/im;
+	var startCondReg = /<!--\[[^\]]+\]>/gim;
+	var endCondReg = /<!\[endif\]-->/gim;
 	var basePath, mainPath, mainName, alternatePath;
 
 	function createFile(name, content) {
@@ -33,6 +33,8 @@ module.exports = function(options) {
 		var files = [];
 
 		content
+			.replace(startCondReg, '')
+			.replace(endCondReg, '')
 			.replace(/<!--(?:(?:.|\r|\n)*?)-->/gim, '')
 			.replace(reg, function (a, b) {
 				var filePath = path.resolve(path.join(alternatePath || mainPath, b));
