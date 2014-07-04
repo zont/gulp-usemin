@@ -599,5 +599,55 @@ describe('gulp-usemin', function() {
 				compare('conditional-complex.html', 'conditional-complex.html', done);
 			});
 		});
+
+		describe('globbed files:', function() {
+			function compare(name, callback, end) {
+				var stream = usemin();
+
+				stream.on('data', callback);
+				stream.on('end', end);
+
+				stream.write(getFixture(name));
+				stream.end();
+			}
+
+			it('glob (js block)', function(done) {
+				var expectedName = 'app.js';
+				var exist = false;
+
+				compare(
+					'glob-js.html',
+					function(newFile) {
+						if (newFile.path === expectedName) {
+							exist = true;
+							assert.equal(String(newFile.contents), String(getExpected(expectedName).contents));
+						}
+					},
+					function() {
+						assert.ok(exist);
+						done();
+					}
+				);
+			});
+
+			it('glob (css block)', function(done) {
+				var expectedName = 'style.css';
+				var exist = false;
+
+				compare(
+					'glob-css.html',
+					function(newFile) {
+						if (newFile.path === expectedName) {
+							exist = true;
+							assert.equal(String(newFile.contents), String(getExpected(expectedName).contents));
+						}
+					},
+					function() {
+						assert.ok(exist);
+						done();
+					}
+				);
+			});
+		});
 	});
 });
