@@ -650,4 +650,37 @@ describe('gulp-usemin', function() {
 			});
 		});
 	});
+
+	describe('glob resolver', function () {
+		function compare(name, expectedName, done) {
+			var exist = false;
+			var stream = usemin.resolveGlobs();
+			stream.on('data', function(newFile) {
+				if (path.basename(newFile.path) === name) {
+					assert.equal(String(newFile.contents), String(getExpected(expectedName).contents));
+					exist = true;
+				}
+			});
+
+			stream.on('end', function() {
+				assert.ok(exist, 'expected file ' + name);
+				done();
+			});
+			stream.write(getFixture(name));
+
+			stream.end();
+		}
+
+		it('should replace css globs with resolved file paths', function (done) {
+			compare('glob-css.html', 'resolved-glob-css.html', done);
+		});
+
+		it('should replace js globs with resolved file paths', function(done) {
+			compare('glob-js.html', 'resolved-glob-js.html', done);
+		});
+
+		it('should retain non-glob files paths', function(done) {
+			compare('glob-js-plus-literal.html', 'resolved-glob-js-plus-literal.html', done);
+		});
+	});
 });
