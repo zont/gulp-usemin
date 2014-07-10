@@ -72,29 +72,35 @@ module.exports = function(options) {
 	}
 
 	function processTask(index, tasks, name, files, callback) {
-		var newFiles = [];
+		function nextTask(newFiles) {
+			if (tasks[++index])
+				processTask(index, tasks, name, newFiles, callback);
+			else
+				newFiles.forEach(callback);
+		}
 
 		if (tasks[index] == 'concat') {
-			newFiles = [concat(files, name)];
+			nextTask([concat(files, name)]);
 		}
 		else {
+			var newFiles = [];
 			var stream = tasks[index];
 
-			function write(file) {
+			function onData(file) {
 				newFiles.push(file);
 			}
 
-			stream.on('data', write);
+			stream.on('data', onData);
 			files.forEach(function(file) {
 				stream.write(file);
 			});
-			stream.removeListener('data', write);
-		}
+			stream.end();
 
-		if (tasks[++index])
-			processTask(index, tasks, name, newFiles, callback);
-		else
-			newFiles.forEach(callback);
+			stream.on('end', function() {
+				//stream.removeListener('data', onData);
+				nextTask(newFiles);
+			});
+		}
 	}
 
 	function process(name, files, pipelineId, callback) {
@@ -105,9 +111,21 @@ module.exports = function(options) {
 		processTask(0, tasks, name, files, callback);
 	}
 
+	var waitFor = 0;
+
 	function processHtml(content, push, callback) {
 		var html = [];
 		var sections = content.split(endReg);
+
+		function checkFinish() {
+			if( 0 < --waitFor )
+				return;
+
+			process(mainName, [createFile(mainName, html.join(''))], 'html', function(file) {
+				push(file);
+				callback();
+			});
+		}
 
 		for (var i = 0, l = sections.length; i < l; ++i)
 			if (sections[i].match(startReg)) {
@@ -121,6 +139,7 @@ module.exports = function(options) {
 				if (startCondLine && endCondLine)
 					html.push(startCondLine[0]);
 
+				++waitFor;
 				if (getBlockType(section[5]) == 'js')
 					process(section[4], getFiles(section[5], jsReg), section[1], function(name, file) {
 						push(file);
@@ -138,11 +157,6 @@ module.exports = function(options) {
 			}
 			else
 				html.push(sections[i]);
-
-		process(mainName, [createFile(mainName, html.join(''))], 'html', function(file) {
-			push(file);
-			callback();
-		});
 	}
 
 	return through.obj(function(file, enc, callback) {
