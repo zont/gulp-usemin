@@ -80,6 +80,9 @@ Type: `Array`
 
 If exist used for modify files. If does not contain string 'concat', then it added as first member of pipeline
 
+#### ouputRelativePath
+Type: `String`
+Relative location to html file for new concatenated js and css.
 
 ## Use case
 
