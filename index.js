@@ -18,8 +18,14 @@ module.exports = function(options) {
 	var basePath, mainPath, mainName, alternatePath;
 
 	function createFile(name, content) {
+		var filePath = path.join(path.relative(basePath, mainPath), name)
+		var isStatic = name.split('.').pop() === 'js' || name.split('.').pop() === 'css'
+
+		if (options.ouputRelativePath && isStatic)
+				filePath = options.ouputRelativePath + name;
+
 		return new gutil.File({
-			path: path.join(path.relative(basePath, mainPath), name),
+			path: filePath,
 			contents: new Buffer(content)
 		})
 	}
