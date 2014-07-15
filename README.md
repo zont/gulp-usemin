@@ -154,6 +154,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.6
+- ouputRelativePath option (by bhstahl)
+
 #####0.3.5
 - Support for conditional comments inside build blocks (by simplydenis)
 
