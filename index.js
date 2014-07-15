@@ -78,29 +78,35 @@ module.exports = function(options) {
 	}
 
 	function processTask(index, tasks, name, files, callback) {
-		var newFiles = [];
+		function nextTask(newFiles) {
+			if (tasks[++index])
+				processTask(index, tasks, name, newFiles, callback);
+			else
+				newFiles.forEach(callback);
+		}
 
 		if (tasks[index] == 'concat') {
-			newFiles = [concat(files, name)];
+			nextTask([concat(files, name)]);
 		}
 		else {
+			var newFiles = [];
 			var stream = tasks[index];
 
-			function write(file) {
+			function onData(file) {
 				newFiles.push(file);
 			}
 
-			stream.on('data', write);
+			stream.on('data', onData);
 			files.forEach(function(file) {
 				stream.write(file);
 			});
-			stream.removeListener('data', write);
-		}
+			stream.end();
 
-		if (tasks[++index])
-			processTask(index, tasks, name, newFiles, callback);
-		else
-			newFiles.forEach(callback);
+			stream.on('end', function() {
+				//stream.removeListener('data', onData);
+				nextTask(newFiles);
+			});
+		}
 	}
 
 	function process(name, files, pipelineId, callback) {
@@ -111,44 +117,55 @@ module.exports = function(options) {
 		processTask(0, tasks, name, files, callback);
 	}
 
+	function processHtmlHandleSection(sections, sectionIndex, html, push, callback) {
+		if( sections.length == sectionIndex ) {
+			process(mainName, [createFile(mainName, html.join(''))], 'html', function(file) {
+				push(file);
+				callback();
+			});
+
+			return;
+		}
+
+		if (sections[sectionIndex].match(startReg)) {
+			var section = sections[sectionIndex].split(startReg);
+			alternatePath = section[2];
+
+			html.push(section[0]);
+
+			var startCondLine = section[5].match(startCondReg);
+			var endCondLine = section[5].match(endCondReg);
+			if (startCondLine && endCondLine)
+				html.push(startCondLine[0]);
+
+			if (getBlockType(section[5]) == 'js')
+				process(section[4], getFiles(section[5], jsReg), section[1], function(name, file) {
+					push(file);
+					if (path.extname(file.path) == '.js')
+						html.push('<script src="' + name.replace(path.basename(name), path.basename(file.path)) + '"></script>');
+					if (startCondLine && endCondLine)
+						html.push(endCondLine[0]);
+					processHtmlHandleSection(sections, ++sectionIndex, html, push, callback);
+				}.bind(this, section[3]));
+			else
+				process(section[4], getFiles(section[5], cssReg), section[1], function(name, file) {
+					push(file);
+					html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"/>');
+					if (startCondLine && endCondLine)
+						html.push(endCondLine[0]);
+					processHtmlHandleSection(sections, ++sectionIndex, html, push, callback);
+				}.bind(this, section[3]));
+		}
+		else {
+			html.push(sections[sectionIndex]);
+			processHtmlHandleSection(sections, ++sectionIndex, html, push, callback);
+		}
+	}
+
 	function processHtml(content, push, callback) {
 		var html = [];
 		var sections = content.split(endReg);
-
-		for (var i = 0, l = sections.length; i < l; ++i)
-			if (sections[i].match(startReg)) {
-				var section = sections[i].split(startReg);
-				alternatePath = section[2];
-
-				html.push(section[0]);
-
-				var startCondLine = section[5].match(startCondReg);
-				var endCondLine = section[5].match(endCondReg);
-				if (startCondLine && endCondLine)
-					html.push(startCondLine[0]);
-
-				if (getBlockType(section[5]) == 'js')
-					process(section[4], getFiles(section[5], jsReg), section[1], function(name, file) {
-						push(file);
-						if (path.extname(file.path) == '.js')
-							html.push('<script src="' + name.replace(path.basename(name), path.basename(file.path)) + '"></script>');
-					}.bind(this, section[3]));
-				else
-					process(section[4], getFiles(section[5], cssReg), section[1], function(name, file) {
-						push(file);
-						html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"/>');
-					}.bind(this, section[3]));
-
-				if (startCondLine && endCondLine)
-					html.push(endCondLine[0]);
-			}
-			else
-				html.push(sections[i]);
-
-		process(mainName, [createFile(mainName, html.join(''))], 'html', function(file) {
-			push(file);
-			callback();
-		});
+		processHtmlHandleSection(sections, 0, html, push, callback);
 	}
 
 	return through.obj(function(file, enc, callback) {
