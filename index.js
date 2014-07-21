@@ -21,8 +21,8 @@ module.exports = function(options) {
 		var filePath = path.join(path.relative(basePath, mainPath), name)
 		var isStatic = name.split('.').pop() === 'js' || name.split('.').pop() === 'css'
 
-		if (options.ouputRelativePath && isStatic)
-				filePath = options.ouputRelativePath + name;
+		if (options.outputRelativePath && isStatic)
+				filePath = options.outputRelativePath + name;
 
 		return new gutil.File({
 			path: filePath,

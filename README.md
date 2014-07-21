@@ -80,7 +80,7 @@ Type: `Array`
 
 If exist used for modify files. If does not contain string 'concat', then it added as first member of pipeline
 
-#### ouputRelativePath
+#### outputRelativePath
 Type: `String`
 Relative location to html file for new concatenated js and css.
 
@@ -153,6 +153,9 @@ This will generate the following output:
 ```
 
 ## Changelog
+
+#####0.3.7
+- rename ouputRelativePath to outputRelativePath
 
 #####0.3.6
 - ouputRelativePath option (by bhstahl)
