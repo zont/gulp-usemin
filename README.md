@@ -155,7 +155,7 @@ This will generate the following output:
 ## Changelog
 
 #####0.3.7
-- rename ouputRelativePath to outputRelativePath
+- ouputRelativePath renamed outputRelativePath
 
 #####0.3.6
 - ouputRelativePath option (by bhstahl)
