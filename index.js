@@ -8,8 +8,7 @@ var glob = require('glob');
 
 module.exports = function(options) {
   options = options || {};
-
-  var startReg = /<!--\s*build:(\w+)(?:\(([^\)]+?)\))?\s+(\/?([^\s]+?))\s*-->/gim;
+  var startReg = /<!--\s*build:(\w+)(?:\(([^\)]+?)\))?\s+(\/?([^\s]+?))?\s*-->/gim;
   var endReg = /<!--\s*endbuild\s*-->/gim;
   var jsReg = /<\s*script\s+.*?src\s*=\s*"([^"]+?)".*?><\s*\/\s*script\s*>/gi;
   var cssReg = /<\s*link\s+.*?href\s*=\s*"([^"]+)".*?>/gi;
@@ -115,7 +114,7 @@ module.exports = function(options) {
     var html = [];
     var sections = content.split(endReg);
 
-    for (var i = 0, l = sections.length; i < l; ++i)
+    for (var i = 0, l = sections.length; i < l; ++i) {
       if (sections[i].match(startReg)) {
         var section = sections[i].split(startReg);
         alternatePath = section[2];
@@ -127,24 +126,28 @@ module.exports = function(options) {
         if (startCondLine && endCondLine)
           html.push(startCondLine[0]);
 
-        if (getBlockType(section[5]) == 'js')
-          process(section[4], getFiles(section[5], jsReg), section[1], function(name, file) {
-            push(file);
-            if (path.extname(file.path) == '.js')
-              html.push('<script src="' + name.replace(path.basename(name), path.basename(file.path)) + '"></script>');
-          }.bind(this, section[3]));
-        else
-          process(section[4], getFiles(section[5], cssReg), section[1], function(name, file) {
-            push(file);
-            html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"/>');
-          }.bind(this, section[3]));
+        if (section[1] !== 'remove') {
+          if (getBlockType(section[5]) == 'js') {
+            process(section[4], getFiles(section[5], jsReg), section[1], function(name, file) {
+              push(file);
+              if (path.extname(file.path) == '.js')
+                html.push('<script src="' + name.replace(path.basename(name), path.basename(file.path)) + '"></script>');
+            }.bind(this, section[3]));
+          } else {
+            process(section[4], getFiles(section[5], cssReg), section[1], function(name, file) {
+              push(file);
+              html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"/>');
+            }.bind(this, section[3]));
+          }
+        }
 
-        if (startCondLine && endCondLine)
+        if (startCondLine && endCondLine) {
           html.push(endCondLine[0]);
-      }
-      else
+        }
+      } else {
         html.push(sections[i]);
-
+      }
+    }
     process(mainName, [createFile(mainName, html.join(''))], 'html', function(file) {
       push(file);
       callback();

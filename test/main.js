@@ -33,6 +33,35 @@ function getExpected(filePath) {
 }
 
 describe('gulp-usemin', function() {
+  describe('allow removal sections', function() {
+      function compare(name, expectedName, done) {
+        var stream = usemin({html: [htmlmin({empty: true, quotes: true})]});
+
+        stream.on('data', function(newFile) {
+          if (path.basename(newFile.path) === name)
+            assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+        });
+        stream.on('end', function() {
+          done();
+        });
+
+        stream.write(getFixture(name));
+        stream.end();
+      }
+
+      it('simple js block', function(done) {
+        compare('simple-js-removal.html', 'simple-js-removal.html', done);
+      });
+
+      it('minified js block', function(done) {
+        compare('min-html-simple-removal.html', 'min-html-simple-removal.html', done);
+      });
+
+      it('many blocks', function(done) {
+        compare('many-blocks-removal.html', 'many-blocks-removal.html', done);
+      });
+  });
+
   describe('negative test:', function() {
     it('shouldn\'t work in stream mode', function(done) {
       var stream = usemin();
