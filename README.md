@@ -43,7 +43,7 @@ Blocks are expressed as:
 <!-- endbuild -->
 ```
 
-- **pipelineId**: pipeline id for options
+- **pipelineId**: pipeline id for options or *remove* to remove a section
 - **alternate search path**: (optional) By default the input files are relative to the treated file. Alternate search path allows one to change that
 - **path**: the file path of the optimized file, the target output
 
@@ -65,6 +65,10 @@ An example of this in completed form can be seen below:
 <script src="js/controllers/thing-controller.js"></script>
 <script src="js/models/thing-model.js"></script>
 <script src="js/views/thing-view.js"></script>
+<!-- endbuild -->
+
+<!-- build:remove -->
+<script src="js/localhostDependencies.js"></script>
 <!-- endbuild -->
 ```
 
