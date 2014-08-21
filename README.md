@@ -158,6 +158,10 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.8
+- allow removal option (by tejohnso)
+- added support for single quotes (by adicirstei)
+
 #####0.3.7
 - ouputRelativePath renamed outputRelativePath
 
