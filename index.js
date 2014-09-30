@@ -5,6 +5,8 @@ var EOL = require('os').EOL;
 var through = require('through2');
 var gutil = require('gulp-util');
 var glob = require('glob');
+var minimatch = require('minimatch');
+var when = require('when');
 
 module.exports = function(options) {
   options = options || {};
@@ -30,12 +32,67 @@ module.exports = function(options) {
   }
 
   function getBlockType(content) {
-    return jsReg.test(content) ? 'js' : 'css';
+    return jsReg.test(content.replace(/\s+/g,' ').trim()) ? 'js' : 'css';
   }
 
-  function getFiles(content, reg) {
-    var paths = [];
+  function readStream(stream, callback) {
     var files = [];
+    var deferred = when.defer();
+
+    stream.on('data', function (file) {
+      if(file.isStream()) {
+        this.emit('error', gutil.PluginError('gulp-usemin', 'Streams in assets are not supported!'));
+      }
+
+      if(file.isBuffer()) {
+        files.push(file);
+      }
+    });
+
+    stream.on('end', function () {
+      deferred.resolve(files);
+    });
+
+    return deferred.promise;
+  }
+
+  function matcher(fileArray) {
+      var allFiles = fileArray.map(function (file) {
+          return file.path;
+      });
+
+      var filesByPath = fileArray.reduce(function (obj, file) {
+        obj[file.path] = file;
+        return obj;
+      }, {});
+
+      var notMatched = allFiles.splice(); // clone
+
+      return {
+          matching: function (pattern) {
+              var matched = minimatch.match(allFiles, pattern);
+
+              // filter array
+              notMatched = notMatched.filter(function (i) {
+                  return matched.indexOf(i) < 0;
+              });
+
+              return matched.map(function (path) {
+                  return filesByPath[path];
+              });
+          },
+
+          notMatched: function () {
+            return notMatched.splice();
+          }
+      }
+  }
+
+  function getFiles(content, reg, alternatePath, matcherPromise) {
+    var paths = [];
+    var promises = [];
+    var files = [];
+    var i, l;
 
     content
       .replace(startCondReg, '')
@@ -50,20 +107,36 @@ module.exports = function(options) {
         paths.push(filePath);
       });
 
-    for (var i = 0, l = paths.length; i < l; ++i) {
-      var filepaths = glob.sync(paths[i]);
-      if(filepaths[0] === undefined) {
-        throw new gutil.PluginError('gulp-usemin', 'Path ' + paths[i] + ' not found!');
-      }
-      filepaths.forEach(function (filepath) {
-        files.push(new gutil.File({
-          path: filepath,
-          contents: fs.readFileSync(filepath)
-        }));
-      });
+    if(!matcherPromise) {
+        // read files from filesystem
+        for (i = 0, l = paths.length; i < l; ++i) {
+          var filepaths = glob.sync(paths[i]);
+          if(filepaths[0] === undefined) {
+            throw new gutil.PluginError('gulp-usemin', 'Path ' + paths[i] + ' not found!');
+          }
+          promises.push.apply(promises, filepaths.map(function (filepath) {
+            var fileDeferred = when.defer();
+            fs.readFile(filepath, function (err, data) {
+              if(err) {
+                  throw err;
+              }
+              fileDeferred.resolve(new gutil.File({
+                path: filepath,
+                contents: data
+              }));
+            });
+            return fileDeferred.promise;
+          }));
+        }
+        return when.all(promises);
     }
-
-    return files;
+    else {
+        // read files from stream
+        for (i = 0, l = paths.length; i < l; ++i) {
+            files.push.apply(matcherPromise.matching(paths[i]));
+        }
+        return when.resolve(files);
+    }
   }
 
   function concat(files, name) {
@@ -110,48 +183,89 @@ module.exports = function(options) {
     processTask(0, tasks, name, files, callback);
   }
 
-  function processHtml(content, push, callback) {
+  function processHtml(content, push, matcherProducer, callback) {
     var html = [];
     var sections = content.split(endReg);
+    var promise = when.resolve();
 
     for (var i = 0, l = sections.length; i < l; ++i) {
       if (sections[i].match(startReg)) {
         var section = sections[i].split(startReg);
         alternatePath = section[2];
 
-        html.push(section[0]);
+        (function (section) {
+          promise = promise
+            .then(function () {
+                html.push(section[0]);
+              });
+        }(section))
 
         var startCondLine = section[5].match(startCondReg);
         var endCondLine = section[5].match(endCondReg);
-        if (startCondLine && endCondLine)
-          html.push(startCondLine[0]);
+        if (startCondLine && endCondLine) {
+          (function (startCondLine) {
+            promise = promise.then(function () {
+              html.push(startCondLine[0]);
+            });
+          }(startCondLine))
+        }
 
         if (section[1] !== 'remove') {
           if (getBlockType(section[5]) == 'js') {
-            process(section[4], getFiles(section[5], jsReg), section[1], function(name, file) {
-              push(file);
-              if (path.extname(file.path) == '.js')
-                html.push('<script src="' + name.replace(path.basename(name), path.basename(file.path)) + '"></script>');
-            }.bind(this, section[3]));
+              (function (section, alternatePath) {
+                promise = promise
+                  .then(matcherProducer)
+                  .then(function (matcher) {
+                    return getFiles(section[5], jsReg, alternatePath, matcher)
+                  })
+                  .then(function (files) {
+                    process(section[4], files, section[1], function(name, file) {
+                      push(file);
+                      if (path.extname(file.path) == '.js')
+                        html.push('<script src="' + name.replace(path.basename(name), path.basename(file.path)) + '"></script>');
+                      }.bind(this, section[3]));
+                  });
+              }(section, alternatePath))
           } else {
-            process(section[4], getFiles(section[5], cssReg), section[1], function(name, file) {
-              push(file);
-              html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"/>');
-            }.bind(this, section[3]));
+              (function (section, alternatePath) {
+                  promise = promise
+                    .then(matcherProducer)
+                    .then(function (matcher) {
+                      return getFiles(section[5], cssReg, alternatePath, matcher)
+                    })
+                    .then(function (files) {
+                      process(section[4], files, section[1], function (name, file) {
+                        push(file);
+                        html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"/>');
+                      }.bind(this, section[3]));
+                    });
+              }(section, alternatePath));
           }
         }
 
         if (startCondLine && endCondLine) {
-          html.push(endCondLine[0]);
+          (function (endCondLine) {
+            promise = promise.then(function () {
+              html.push(endCondLine[0]);
+            });
+          }(endCondLine));
         }
-      } else {
-        html.push(sections[i]);
+      }
+      else {
+        (function (section) {
+          promise = promise.then(function () {
+            html.push(section);
+          });
+        }(sections[i]))
       }
     }
-    process(mainName, [createFile(mainName, html.join(''))], 'html', function(file) {
-      push(file);
-      callback();
-    });
+
+    return promise.then(function () {
+        process(mainName, [createFile(mainName, html.join(''))], 'html', function(file) {
+          push(file);
+          callback();
+        });
+    })
   }
 
   return through.obj(function(file, enc, callback) {
@@ -168,7 +282,31 @@ module.exports = function(options) {
       mainPath = path.dirname(file.path);
       mainName = path.basename(file.path);
 
-      processHtml(String(file.contents), this.push.bind(this), callback);
+      var matcherPromise, matcherProducer;
+
+      if(options.assetsStream) {
+        matcherPromise = readStream(options.assetsStream)
+          .then(function (filesList) {
+            return matcher(filesList);
+          });
+        matcherProducer = function () {
+            return matcherPromise;
+        }
+      }
+
+      var push = this.push.bind(this);
+      processHtml(String(file.contents), push, matcherProducer, function () {
+          // push not processed files down the stream
+          if(matcherPromise) {
+              matcherPromise.then(function (filesMatcher) {
+                  var rest = filesMatcher.notMatched();
+                  rest.forEach(function (file) {
+                      push(file);
+                  })
+              })
+          }
+          callback();
+      });
     }
   });
 };
