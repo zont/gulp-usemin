@@ -21,14 +21,14 @@ var minifyHtml = require('gulp-minify-html');
 var minifyCss = require('gulp-minify-css');
 var rev = require('gulp-rev');
 
-gulp.task('usemin', function() {
-  gulp.src('./*.html')
-    .pipe(usemin({
-      css: [minifyCss(), 'concat'],
-      html: [minifyHtml({empty: true})],
-      js: [uglify(), rev()]
-    }))
-    .pipe(gulp.dest('build/'));
+gulp.task('usemin', function () {
+  return gulp.src('./*.html')
+      .pipe(usemin({
+        css: [minifyCss(), 'concat'],
+        html: [minifyHtml({empty: true})],
+        js: [uglify(), rev()]
+      }))
+      .pipe(gulp.dest('build/'));
 });
 ```
 
@@ -121,13 +121,13 @@ We want to optimize `foo.js` and `bar.js` into `optimized.js`, referenced using 
 We want our files to be generated in the `dist` directory. `gulpfile.js` should contain the following block:
 
 ```javascript
-gulp.task('usemin', function(){
-  gulp.src('./app/index.html')
-    .pipe(usemin({
-      js: [uglify()]
-      // in this case css will be only concatenated (like css: ['concat']).
-    }))
-    .pipe(gulp.dest('dist/'));
+gulp.task('usemin', function () {
+  return gulp.src('./app/index.html')
+      .pipe(usemin({
+        js: [uglify()]
+        // in this case css will be only concatenated (like css: ['concat']).
+      }))
+      .pipe(gulp.dest('dist/'));
 });
 ```
 
