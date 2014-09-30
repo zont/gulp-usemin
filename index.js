@@ -179,8 +179,9 @@ module.exports = function(options) {
 
     if (tasks[++index])
       processTask(index, tasks, name, newFiles, callback);
-    else
+    else {
       newFiles.forEach(callback);
+    }
   }
 
   function process(name, files, pipelineId, callback) {
@@ -315,16 +316,8 @@ module.exports = function(options) {
         if (options.other && matcherPromise) {
           matcherPromise.then(function (filesMatcher) {
             var rest = filesMatcher.notMatched();
-            var total = 1;
-            if(options.other.indexOf('concat') === -1) {
-              total = rest.length;
-            }
-            processTask(0, options.other, options.othersName, rest, function (file) {
-              push(file);
-              if(--total == 0) {
-                callback();
-              }
-            });
+            processTask(0, options.other, options.othersName, rest, push);
+            callback();
           });
         }
         else {
