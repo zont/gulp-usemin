@@ -50,6 +50,9 @@ module.exports = function(options) {
     });
 
     stream.on('end', function () {
+        if(options.debugStreamFiles) {
+            console.log('asssets:\n', files.map(function (f) { return f.path; }).join('\n '));
+        }
       deferred.resolve(files);
     });
 
