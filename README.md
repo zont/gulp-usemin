@@ -79,6 +79,11 @@ Type: `String`
 
 Alternate root path for assets. New concated js and css files will be written to the path specified in the build block, relative to this path. Currently asset files are also returned in the stream.
 
+#### path
+Type: `String`
+
+Default alternate search path for files. Can be overridden by the alternate search path option for a given block.
+
 #### any pipelineId
 Type: `Array`
 
