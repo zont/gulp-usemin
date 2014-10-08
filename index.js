@@ -208,9 +208,9 @@ module.exports = function(options) {
         (function (section) {
           promise = promise
             .then(function () {
-                html.push(section[0]);
-              });
-        }(section))
+              html.push(section[0]);
+            });
+        }(section));
 
         var startCondLine = section[5].match(startCondReg);
         var endCondLine = section[5].match(endCondReg);
@@ -287,6 +287,18 @@ module.exports = function(options) {
     })
   }
 
+  var matcherPromise, matcherProducer;
+
+  if(options.assetsStream) {
+    matcherPromise = readStream(options.assetsStream())
+      .then(function (filesList) {
+        return produceMatcher(filesList);
+      });
+    matcherProducer = function () {
+      return matcherPromise;
+    }
+  }
+
   return through.obj(function(file, enc, callback) {
     if (file.isNull()) {
       this.push(file); // Do nothing if no contents
@@ -301,31 +313,16 @@ module.exports = function(options) {
       mainPath = path.dirname(file.path);
       mainName = path.basename(file.path);
 
-      var matcherPromise, matcherProducer;
-
-      if(options.assetsStream) {
-        matcherPromise = readStream(options.assetsStream())
-          .then(function (filesList) {
-            return produceMatcher(filesList);
-          });
-        matcherProducer = function () {
-          return matcherPromise;
-        }
-      }
-
+      processHtml(String(file.contents), this.push.bind(this), matcherProducer, callback);
+    }
+  }, function (callback) {
+    // push not processed files down the stream
+    if (options.other && matcherPromise) {
       var push = this.push.bind(this);
-      processHtml(String(file.contents), push, matcherProducer, function () {
-        // push not processed files down the stream
-        if (options.other && matcherPromise) {
-          matcherPromise.then(function (filesMatcher) {
-            var rest = filesMatcher.notMatched();
-            processTask(0, options.other, options.othersName, rest, push);
-            callback();
-          });
-        }
-        else {
-          callback();
-        }
+      matcherPromise.then(function (filesMatcher) {
+      var rest = filesMatcher.notMatched();
+      processTask(0, options.other, options.othersName, rest, push);
+        callback();
       });
     }
   });
