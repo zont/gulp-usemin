@@ -4,6 +4,7 @@
   "description": "Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).",
   "main": "index.js",
   "dependencies": {
+    "event-stream": "^3.1.7",
     "glob": "~4.0.4",
     "gulp-util": "~2.2.14",
     "minimatch": "^1.0.0",
