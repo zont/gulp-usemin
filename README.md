@@ -24,9 +24,21 @@ var rev = require('gulp-rev');
 gulp.task('usemin', function () {
   return gulp.src('./*.html')
       .pipe(usemin({
-        css: [minifyCss(), 'concat'],
-        html: [minifyHtml({empty: true})],
-        js: [uglify(), rev()]
+        css: function (stream, concat) {
+            return stream
+                .pipe(minifyCss())
+                .pipe(concat);
+        },
+        html: function (stream) {
+            return stream
+                .pipe(minifyHtml({empty: true}));
+        },
+        js: function (stream, concat) {
+            return stream
+                .pipe(concat)
+                .pipe(uglify())
+                .pipe(rev());
+        }
       }))
       .pipe(gulp.dest('build/'));
 });
