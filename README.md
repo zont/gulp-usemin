@@ -97,9 +97,26 @@ Type: `String`
 Default alternate search path for files. Can be overridden by the alternate search path option for a given block.
 
 #### any pipelineId
-Type: `Array`
+Type: `Function`
 
-If exist used for modify files. If does not contain string 'concat', then it added as first member of pipeline
+If exist used for modify files. Each pipeline gets input stream and concat task, except for html. Function is called separately on demand for each block.
+
+### 'other' pipelineId
+Type: `Function`
+
+Special pipeline for files not matched by any block, but passed to asssets stream.
+
+### assetsStream
+Type: `Function`
+
+Stream constructor (works with lazypipe) of assets stream.
+When passed, usemin search for files requested by blocks inside this stream instead on filesystem.
+
+### debugStreamFiles
+Type: `Boolean`
+Default: false
+
+Show paths of all files passed to assets stream in console.
 
 #### outputRelativePath
 Type: `String`
