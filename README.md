@@ -110,7 +110,7 @@ Special pipeline for files not matched by any block, but passed to asssets strea
 Type: `Function`
 
 Stream constructor (works with lazypipe) of assets stream.
-When passed, usemin search for files requested by blocks inside this stream instead on filesystem.
+When passed, usemin search for files requested by blocks inside this stream instead of probing filesystem. Error is returned if no such file was passed.
 
 #### debugStreamFiles
 Type: `Boolean`
