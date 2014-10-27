@@ -23,24 +23,24 @@ var rev = require('gulp-rev');
 
 gulp.task('usemin', function () {
   return gulp.src('./*.html')
-      .pipe(usemin({
-        css: function (stream, concat) {
-            return stream
-                .pipe(minifyCss())
-                .pipe(concat);
-        },
-        html: function (stream) {
-            return stream
-                .pipe(minifyHtml({empty: true}));
-        },
-        js: function (stream, concat) {
-            return stream
-                .pipe(concat)
-                .pipe(uglify())
-                .pipe(rev());
-        }
-      }))
-      .pipe(gulp.dest('build/'));
+    .pipe(usemin({
+      css: function (stream, concat) {
+        return stream
+          .pipe(minifyCss())
+          .pipe(concat);
+      },
+      html: function (stream) {
+        return stream
+          .pipe(minifyHtml({empty: true}));
+      },
+      js: function (stream, concat) {
+        return stream
+          .pipe(concat)
+          .pipe(uglify())
+          .pipe(rev());
+      }
+    }))
+    .pipe(gulp.dest('build/'));
 });
 ```
 
