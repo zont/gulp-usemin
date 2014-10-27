@@ -101,18 +101,18 @@ Type: `Function`
 
 If exist used for modify files. Each pipeline gets input stream and concat task, except for html. Function is called separately on demand for each block.
 
-### 'other' pipelineId
+#### 'other' pipelineId
 Type: `Function`
 
 Special pipeline for files not matched by any block, but passed to asssets stream.
 
-### assetsStream
+#### assetsStream
 Type: `Function`
 
 Stream constructor (works with lazypipe) of assets stream.
 When passed, usemin search for files requested by blocks inside this stream instead on filesystem.
 
-### debugStreamFiles
+#### debugStreamFiles
 Type: `Boolean`
 Default: false
 
