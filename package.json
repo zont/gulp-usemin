@@ -8,11 +8,9 @@
     "glob": "~4.0.4",
     "gulp-util": "~2.2.14",
     "minimatch": "^1.0.0",
-    "through2": "~0.5.1",
     "when": "^3.4.6"
   },
   "devDependencies": {
-    "event-stream": "~3.1.0",
     "gulp": "~3.8.6",
     "gulp-jshint": "~1.7.0",
     "gulp-mocha": "~0.5.1",
@@ -20,7 +18,8 @@
     "gulp-uglify": "~0.3.1",
     "gulp-minify-html": "~0.1.1",
     "gulp-minify-css": "~0.3.0",
-    "gulp-rev": "~0.4.2"
+    "gulp-rev": "~0.4.2",
+    "through2": "~0.5.1"
   },
   "scripts": {
     "test": "mocha"

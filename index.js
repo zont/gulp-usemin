@@ -51,6 +51,8 @@ module.exports = function (options) {
       }
 
       if (file.isBuffer()) {
+        file.base = path.resolve(file.base);
+        file.path = path.resolve(file.path);
         files.push(file);
       }
     });
@@ -58,7 +60,7 @@ module.exports = function (options) {
     stream.on('end', function () {
       if (options.debugStreamFiles) {
         console.log('asssets:\n', files.map(function (f) {
-          return f.path;
+          return f.base + ' :: ' + f.path;
         }).join('\n '));
       }
       deferred.resolve(files);
@@ -192,7 +194,12 @@ module.exports = function (options) {
       }
     };
 
-    return pipeline(tip, concatThrough(name));
+    if(typeof pipeline === 'function') {
+        return pipeline(tip, concatThrough(name));
+    }
+    else {
+        return tip.pipe(concatThrough(name));
+    }
   }
 
   function process(name, files, pipelineId) {
@@ -241,7 +248,7 @@ module.exports = function (options) {
                   streams.push(process(name, files, section[1]));
                   var filePath = getPath(name);
                   if (path.extname(filePath) == '.js') {
-                    html.push('<script src="' + name.replace(path.basename(name), path.basename(filePath)) + '"></script>');
+                    html.push('<script src="' + section[3].replace(path.basename(name), path.basename(filePath)) + '"></script>');
                   }
                 });
             }(section, alternatePath))
@@ -256,7 +263,7 @@ module.exports = function (options) {
                   var name = section[4];
                   streams.push(process(name, files, section[1]));
                   var filePath = getPath(name);
-                  html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(filePath)) + '"/>');
+                  html.push('<link rel="stylesheet" href="' + section[3].replace(path.basename(name), path.basename(filePath)) + '"/>');
                 });
             }(section, alternatePath));
           }
@@ -340,6 +347,9 @@ module.exports = function (options) {
           callback();
         })
       });
+    }
+    else {
+        callback();
     }
   });
 };
