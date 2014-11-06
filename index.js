@@ -14,6 +14,10 @@ module.exports = function(options) {
   var cssReg = /<\s*link\s+.*?href\s*=\s*("|')([^"']+)\1.*?>/gi;
   var startCondReg = /<!--\[[^\]]+\]>/gim;
   var endCondReg = /<!\[endif\]-->/gim;
+  // 
+  var jsSrcReg = /src\s*=\s*"([^"]+?)"/;
+  var cssHrefReg = /href\s*=\s*"([^"]+?)"/;
+  // 
   var basePath, mainPath, mainName, alternatePath;
 
   function createFile(name, content) {
@@ -131,12 +135,16 @@ module.exports = function(options) {
             process(section[4], getFiles(section[5], jsReg), section[1], function(name, file) {
               push(file);
               if (path.extname(file.path) == '.js')
-                html.push('<script src="' + name.replace(path.basename(name), path.basename(file.path)) + '"></script>');
+                // html.push('<script src="' + name.replace(path.basename(name), path.basename(file.path)) + '"></script>');
+              html.push(section[5].trim().replace(jsSrcReg, 'src="' + name.replace(path.basename(name), path.basename(file.path) + '"')));
+              // 
             }.bind(this, section[3]));
           } else {
             process(section[4], getFiles(section[5], cssReg), section[1], function(name, file) {
               push(file);
-              html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"/>');
+              // html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"/>');
+              html.push(section[5].trim().replace(cssHrefReg, 'href="' + name.replace(path.basename(name), path.basename(file.path) + '"')));
+              // 
             }.bind(this, section[3]));
           }
         }
