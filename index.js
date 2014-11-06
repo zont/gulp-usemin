@@ -15,8 +15,8 @@ module.exports = function(options) {
   var startCondReg = /<!--\[[^\]]+\]>/gim;
   var endCondReg = /<!\[endif\]-->/gim;
   // 
-  var jsSrcReg = /src\s*=\s*"([^"]+?)"/;
-  var cssHrefReg = /href\s*=\s*"([^"]+?)"/;
+  var jsSrcReg = /src\s*=\s*["|']([^"']+?)["|']/;
+  var cssHrefReg = /href\s*=\s*["|']([^"']+?)["|']/;
   // 
   var basePath, mainPath, mainName, alternatePath;
 
