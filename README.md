@@ -93,6 +93,11 @@ If exist used for modify files. If does not contain string 'concat', then it add
 Type: `String`
 Relative location to html file for new concatenated js and css.
 
+#### enableHtmlComment
+Type: `Boolean`
+
+Keep HTML comment when processing
+
 ## Use case
 
 ```

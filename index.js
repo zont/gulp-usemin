@@ -40,7 +40,9 @@ module.exports = function(options) {
     content
       .replace(startCondReg, '')
       .replace(endCondReg, '')
-      .replace(/<!--(?:(?:.|\r|\n)*?)-->/gim, '')
+      .replace(/<!--(?:(?:.|\r|\n)*?)-->/gim, function (a, quote, b) {
+        return options.enableHtmlComment ? a : '';
+      })
       .replace(reg, function (a, quote, b) {
         var filePath = path.resolve(path.join(alternatePath || options.path || mainPath, b));
 

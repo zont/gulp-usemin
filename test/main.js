@@ -678,5 +678,36 @@ describe('gulp-usemin', function() {
             );
       });
     });
+
+    describe('comment files:', function() {
+      function compare(name, callback, end) {
+        var stream = usemin({enableHtmlComment: true});
+
+        stream.on('data', callback);
+        stream.on('end', end);
+
+        stream.write(getFixture(name));
+        stream.end();
+      }
+
+      it('comment (js block)', function(done) {
+        var expectedName = 'app.js';
+        var exist = false;
+
+        compare(
+            'comment-js.html',
+            function(newFile) {
+              if (newFile.path === expectedName) {
+                exist = true;
+                assert.equal(String(newFile.contents), String(getExpected(expectedName).contents));
+              }
+            },
+            function() {
+              assert.ok(exist);
+              done();
+            }
+            );
+      });
+    });
   });
 });
