@@ -1,41 +1,43 @@
 {
-	"name": "gulp-usemin",
-	"version": "0.3.8",
-	"description": "Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).",
-	"main": "index.js",
-	"dependencies": {
-		"gulp-util": "~2.2.14",
-		"through2": "~0.5.1",
-		"glob": "~4.0.4"
-	},
-	"devDependencies": {
-		"event-stream": "~3.1.0",
-		"gulp": "~3.8.6",
-		"gulp-jshint": "~1.7.0",
-		"gulp-mocha": "~0.5.1",
-		"gulp-util": "~2.2.14",
-		"gulp-uglify": "~0.3.1",
-		"gulp-minify-html": "~0.1.1",
-		"gulp-minify-css": "~0.3.0",
-		"gulp-rev": "~0.4.2"
-	},
-	"scripts": {
-		"test": "mocha"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/zont/gulp-usemin.git"
-	},
-	"keywords": [
-		"gulpplugin",
-		"usemin"
-	],
-	"author": "Alexander Zonov <zont@pochta.ru>",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/zont/gulp-usemin/issues"
-	},
-	"engines": {
-		"node": ">=0.8"
-	}
+  "name": "gulp-usemin",
+  "version": "0.3.8",
+  "description": "Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).",
+  "main": "index.js",
+  "dependencies": {
+    "event-stream": "^3.1.7",
+    "glob": "~4.0.4",
+    "gulp-util": "~2.2.14",
+    "minimatch": "^1.0.0",
+    "when": "^3.4.6"
+  },
+  "devDependencies": {
+    "gulp": "~3.8.6",
+    "gulp-jshint": "~1.7.0",
+    "gulp-mocha": "~0.5.1",
+    "gulp-util": "~2.2.14",
+    "gulp-uglify": "~0.3.1",
+    "gulp-minify-html": "~0.1.1",
+    "gulp-minify-css": "~0.3.0",
+    "gulp-rev": "~0.4.2",
+    "through2": "~0.5.1"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/zont/gulp-usemin.git"
+  },
+  "keywords": [
+    "gulpplugin",
+    "usemin"
+  ],
+  "author": "Alexander Zonov <zont@pochta.ru>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zont/gulp-usemin/issues"
+  },
+  "engines": {
+    "node": ">=0.8"
+  }
 }

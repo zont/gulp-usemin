@@ -23,12 +23,24 @@ var rev = require('gulp-rev');
 
 gulp.task('usemin', function () {
   return gulp.src('./*.html')
-      .pipe(usemin({
-        css: [minifyCss(), 'concat'],
-        html: [minifyHtml({empty: true})],
-        js: [uglify(), rev()]
-      }))
-      .pipe(gulp.dest('build/'));
+    .pipe(usemin({
+      css: function (stream, concat) {
+        return stream
+          .pipe(minifyCss())
+          .pipe(concat);
+      },
+      html: function (stream) {
+        return stream
+          .pipe(minifyHtml({empty: true}));
+      },
+      js: function (stream, concat) {
+        return stream
+          .pipe(concat)
+          .pipe(uglify())
+          .pipe(rev());
+      }
+    }))
+    .pipe(gulp.dest('build/'));
 });
 ```
 
@@ -85,9 +97,26 @@ Type: `String`
 Default alternate search path for files. Can be overridden by the alternate search path option for a given block.
 
 #### any pipelineId
-Type: `Array`
+Type: `Function`
 
-If exist used for modify files. If does not contain string 'concat', then it added as first member of pipeline
+If exist used for modify files. Each pipeline gets input stream and concat task, except for html. Function is called separately on demand for each block.
+
+#### 'other' pipelineId
+Type: `Function`
+
+Special pipeline for files not matched by any block, but passed to asssets stream.
+
+#### assetsStream
+Type: `Function`
+
+Stream constructor (works with lazypipe) of assets stream.
+When passed, usemin search for files requested by blocks inside this stream instead of probing filesystem. Error is returned if no such file was passed.
+
+#### debugStreamFiles
+Type: `Boolean`
+Default: false
+
+Show paths of all files passed to assets stream in console.
 
 #### outputRelativePath
 Type: `String`
