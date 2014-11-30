@@ -11,7 +11,8 @@ module.exports = function(options) {
   var startReg = /<!--\s*build:(\w+)(?:\(([^\)]+?)\))?\s+(\/?([^\s]+?))?\s*-->/gim;
   var endReg = /<!--\s*endbuild\s*-->/gim;
   var jsReg = /<\s*script\s+.*?src\s*=\s*("|')([^"']+?)\1.*?><\s*\/\s*script\s*>/gi;
-  var cssReg = /<\s*link\s+.*?href\s*=\s*("|')([^"']+)\1(?:\s+media\s*=\s*\1([^"']+)\1)?.*?>/gi;
+  var cssReg = /<\s*link\s+.*?href\s*=\s*("|')([^"']+)\1.*?>/gi;
+  var cssMediaReg = /<\s*link\s+.*?media\s*=\s*("|')([^"']+)\1.*?>/gi;
   var startCondReg = /<!--\[[^\]]+\]>/gim;
   var endCondReg = /<!\[endif\]-->/gim;
   var basePath, mainPath, mainName, alternatePath, cssMediaQuery;
@@ -44,15 +45,7 @@ module.exports = function(options) {
       .replace(/<!--(?:(?:.|\r|\n)*?)-->/gim, function (a, quote, b) {
         return options.enableHtmlComment ? a : '';
       })
-      .replace(reg, function (a, quote, b, media) {
-        if (reg === cssReg && media) {
-          if (!cssMediaQuery) {
-            cssMediaQuery = media;
-          } else {
-            if (cssMediaQuery != media)
-              throw new gutil.PluginError('gulp-usemin', 'incompatible css media query for ' + a + ' detected.');
-          }
-        }
+      .replace(reg, function (a, quote, b) {
 
         var filePath = path.resolve(path.join(alternatePath || options.path || mainPath, b));
 
@@ -61,6 +54,17 @@ module.exports = function(options) {
 
         paths.push(filePath);
       });
+
+    if (reg === cssReg) {
+      content.replace(cssMediaReg, function(a, quote, media) {
+        if (!cssMediaQuery) {
+          cssMediaQuery = media;
+        } else {
+          if (cssMediaQuery != media)
+            throw new gutil.PluginError('gulp-usemin', 'incompatible css media query for ' + a + ' detected.');
+        }
+      });
+    }
 
     for (var i = 0, l = paths.length; i < l; ++i) {
       var filepaths = glob.sync(paths[i]);
