@@ -136,6 +136,16 @@ describe('gulp-usemin', function() {
         compare('simple-css.html', 'min-simple-css.html', done);
       });
 
+      it('css block with media query', function(done) {
+        compare('css-with-media-query.html', 'min-css-with-media-query.html', done);
+      });
+
+      it('css block with mixed incompatible media queries should error', function(done) {
+        assert.throws( function() {
+          compare('css-with-media-query-error.html', 'min-css-with-media-query.html', done) }, Error);
+        done();
+      });
+
       it('simple css block with path', function(done) {
         compare('simple-css-path.html', 'min-simple-css-path.html', done);
       });
