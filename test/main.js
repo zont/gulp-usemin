@@ -60,6 +60,11 @@ describe('gulp-usemin', function() {
       it('many blocks', function(done) {
         compare('many-blocks-removal.html', 'many-blocks-removal.html', done);
       });
+
+      it('robust pattern recognition (no whitespace after build:remove)', function(done) {
+        compare('build-remove-no-trailing-whitespace.html', 'build-remove-no-trailing-whitespace.html', done);
+      });
+
   });
 
   describe('negative test:', function() {
