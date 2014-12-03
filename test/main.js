@@ -615,6 +615,58 @@ describe('gulp-usemin', function() {
       });
     });
 
+    describe('outputRelativePath option:', function() {
+      function compare(outputRelativePath, htmlFixtureName, assetFixtureName, done) {
+        var stream = usemin({outputRelativePath: outputRelativePath});
+        var expectedHtmlName = htmlFixtureName;
+        var expectedAssetName = assetFixtureName;
+        var expectedHtmlContents = getExpected(expectedHtmlName).contents;
+        var expectedAssetContents = getExpected(expectedAssetName).contents;
+        var htmlExists = false;
+        var assetExists = false;
+        var callback = function(newFile) {
+          if (newFile.path === expectedHtmlName) {
+            htmlExists = true;
+            assert.equal(String(expectedHtmlContents), String(newFile.contents));
+          }
+          if (newFile.path === expectedAssetName) {
+            assetExists = true;
+            assert.equal(String(expectedAssetContents), String(newFile.contents));
+          }
+        };
+        var end = function() {
+          assert.ok(htmlExists, expectedHtmlName + ' does not exist');
+          assert.ok(assetExists, expectedAssetName + ' does not exist');
+          done();
+        };
+
+        stream.on('data', callback);
+        stream.on('end', end);
+
+        stream.write(getFixture(htmlFixtureName));
+        stream.end();
+      }
+
+      describe('output-path/', function() {
+        it('simple-js.html', function(done) {
+          compare('output-path/', 'simple-js-relative-output-path.html', 'output-path/app.js', done);
+        });
+        it('simple-css.html', function(done) {
+          compare('output-path/', 'simple-css-relative-output-path.html', 'output-path/style.css', done);
+        });
+      });
+
+      describe('output-path', function() {
+        it('simple-js.html', function(done) {
+          compare('output-path', 'simple-js-relative-output-path.html', 'output-path/app.js', done);
+        });
+        it('simple-css.html', function(done) {
+          compare('output-path', 'simple-css-relative-output-path.html', 'output-path/style.css', done);
+        });
+      });
+
+    });
+
     describe('conditional comments:', function() {
       function compare(name, expectedName, done) {
         var stream = usemin();
