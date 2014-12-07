@@ -22,7 +22,7 @@ module.exports = function(options) {
       var isStatic = name.split('.').pop() === 'js' || name.split('.').pop() === 'css'
 
       if (options.outputRelativePath && isStatic)
-        filePath = options.outputRelativePath + name;
+        filePath = path.join(options.outputRelativePath, name);
 
     return new gutil.File({
       path: filePath,
@@ -146,13 +146,14 @@ module.exports = function(options) {
           if (getBlockType(section[5]) == 'js') {
             process(section[4], getFiles(section[5], jsReg), section[1], function(name, file) {
               push(file);
-              if (path.extname(file.path) == '.js')
-                html.push('<script src="' + name.replace(path.basename(name), path.basename(file.path)) + '"></script>');
+              if (path.extname(file.path) == '.js') {
+                html.push('<script src="' + path.join(options.outputRelativePath || '', name.replace(path.basename(name), path.basename(file.path))) + '"></script>');
+              }
             }.bind(this, section[3]));
           } else {
             process(section[4], getFiles(section[5], cssReg), section[1], function(name, file) {
               push(file);
-              html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"' +
+              html.push('<link rel="stylesheet" href="' + path.join(options.outputRelativePath || '', name.replace(path.basename(name), path.basename(file.path))) + '"' +
                         (cssMediaQuery ? ' media="' + cssMediaQuery + '"' : '') +
                         '/>');
             }.bind(this, section[3]));
