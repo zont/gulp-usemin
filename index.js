@@ -186,7 +186,12 @@ module.exports = function(options) {
       mainPath = path.dirname(file.path);
       mainName = path.basename(file.path);
 
-      processHtml(String(file.contents), this.push.bind(this), callback);
+      try {
+        processHtml(String(file.contents), this.push.bind(this), callback);
+      }catch(err){
+        this.emit('error', err);
+        return callback();
+      }
     }
   });
 };
