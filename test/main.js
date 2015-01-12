@@ -110,7 +110,7 @@ describe('gulp-usemin', function() {
 
   describe('should work in buffer mode with', function() {
     describe('minified HTML:', function() {
-      function compare(name, expectedName, done) {
+      function compare(name, expectedName, done, fail) {
         var htmlmin = require('gulp-minify-html');
         var stream = usemin({html: [htmlmin({empty: true})]});
 
@@ -120,6 +120,10 @@ describe('gulp-usemin', function() {
         });
         stream.on('end', function() {
           done();
+        });
+        stream.on('error', function() {
+          if (fail)
+            fail();
         });
 
         stream.write(getFixture(name));
@@ -143,9 +147,10 @@ describe('gulp-usemin', function() {
       });
 
       it('css block with mixed incompatible media queries should error', function(done) {
-        assert.throws( function() {
-          compare('css-with-media-query-error.html', 'min-css-with-media-query.html', done) }, Error);
-        done();
+        compare('css-with-media-query-error.html', 'min-css-with-media-query.html', function() {
+          assert.fail('', '', 'should error', '');
+          done();
+        }, done);
       });
 
       it('simple css block with path', function(done) {
