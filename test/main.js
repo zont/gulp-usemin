@@ -162,6 +162,14 @@ describe('gulp-usemin', function() {
         stream.end();
       }
 
+      it('simple js block with single quotes', function (done) {
+        compare('single-quotes-js.html', 'single-quotes-js.html', done);
+      });
+
+      it('simple css block with single quotes', function (done) {
+        compare('single-quotes-js.html', 'single-quotes-js.html', done);
+      });
+
       it('simple (js block)', function(done) {
         compare('simple-js.html', 'simple-js.html', done);
       });
