@@ -8,13 +8,14 @@ var glob = require('glob');
 
 module.exports = function(options) {
   options = options || {};
-  var startReg = /<!--\s*build:(\w+)(?:\(([^\)]+?)\))?\s+(\/?([^\s]+?))?\s*-->/gim;
+  var startReg = /<!--\s*build:(\w+)(?:(?:\(([^\)]+?)\))?\s+(\/?([^\s]+?))?)?\s*-->/gim;
   var endReg = /<!--\s*endbuild\s*-->/gim;
   var jsReg = /<\s*script\s+.*?src\s*=\s*("|')([^"']+?)\1.*?><\s*\/\s*script\s*>/gi;
   var cssReg = /<\s*link\s+.*?href\s*=\s*("|')([^"']+)\1.*?>/gi;
+  var cssMediaReg = /<\s*link\s+.*?media\s*=\s*("|')([^"']+)\1.*?>/gi;
   var startCondReg = /<!--\[[^\]]+\]>/gim;
   var endCondReg = /<!\[endif\]-->/gim;
-  var basePath, mainPath, mainName, alternatePath;
+  var basePath, mainPath, mainName, alternatePath, cssMediaQuery;
 
   function createFile(name, content) {
     var filePath = path.join(path.relative(basePath, mainPath), name)
@@ -36,12 +37,16 @@ module.exports = function(options) {
   function getFiles(content, reg) {
     var paths = [];
     var files = [];
+    cssMediaQuery = null;
 
     content
       .replace(startCondReg, '')
       .replace(endCondReg, '')
-      .replace(/<!--(?:(?:.|\r|\n)*?)-->/gim, '')
+      .replace(/<!--(?:(?:.|\r|\n)*?)-->/gim, function (a, quote, b) {
+        return options.enableHtmlComment ? a : '';
+      })
       .replace(reg, function (a, quote, b) {
+
         var filePath = path.resolve(path.join(alternatePath || options.path || mainPath, b));
 
         if (options.assetsDir)
@@ -49,6 +54,17 @@ module.exports = function(options) {
 
         paths.push(filePath);
       });
+
+    if (reg === cssReg) {
+      content.replace(cssMediaReg, function(a, quote, media) {
+        if (!cssMediaQuery) {
+          cssMediaQuery = media;
+        } else {
+          if (cssMediaQuery != media)
+            throw new gutil.PluginError('gulp-usemin', 'incompatible css media query for ' + a + ' detected.');
+        }
+      });
+    }
 
     for (var i = 0, l = paths.length; i < l; ++i) {
       var filepaths = glob.sync(paths[i]);
@@ -136,7 +152,9 @@ module.exports = function(options) {
           } else {
             process(section[4], getFiles(section[5], cssReg), section[1], function(name, file) {
               push(file);
-              html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"/>');
+              html.push('<link rel="stylesheet" href="' + name.replace(path.basename(name), path.basename(file.path)) + '"' +
+                        (cssMediaQuery ? ' media="' + cssMediaQuery + '"' : '') +
+                        '/>');
             }.bind(this, section[3]));
           }
         }
@@ -168,7 +186,12 @@ module.exports = function(options) {
       mainPath = path.dirname(file.path);
       mainName = path.basename(file.path);
 
-      processHtml(String(file.contents), this.push.bind(this), callback);
+      try {
+        processHtml(String(file.contents), this.push.bind(this), callback);
+      }catch(err){
+        this.emit('error', err);
+        return callback();
+      }
     }
   });
 };

@@ -56,6 +56,11 @@ describe('gulp-usemin', function() {
       it('many blocks', function(done) {
         compare('many-blocks-removal.html', 'many-blocks-removal.html', done);
       });
+
+      it('robust pattern recognition (no whitespace after build:remove)', function(done) {
+        compare('build-remove-no-trailing-whitespace.html', 'build-remove-no-trailing-whitespace.html', done);
+      });
+
   });
 
   describe('negative test:', function() {
@@ -131,6 +136,16 @@ describe('gulp-usemin', function() {
 
       it('simple css block', function(done) {
         compare('simple-css.html', 'min-simple-css.html', done);
+      });
+
+      it('css block with media query', function(done) {
+        compare('css-with-media-query.html', 'min-css-with-media-query.html', done);
+      });
+
+      it('css block with mixed incompatible media queries should error', function(done) {
+        assert.throws( function() {
+          compare('css-with-media-query-error.html', 'min-css-with-media-query.html', done) }, Error);
+        done();
       });
 
       it('simple css block with path', function(done) {
@@ -500,6 +515,37 @@ describe('gulp-usemin', function() {
 
       it('glob (css block)', function(done) {
         compare('glob-css.html', 'style.css', done);
+      });
+    });
+
+    describe('comment files:', function() {
+      function compare(name, callback, end) {
+        var stream = usemin({enableHtmlComment: true});
+
+        stream.on('data', callback);
+        stream.on('end', end);
+
+        stream.write(getFixture(name));
+        stream.end();
+      }
+
+      it('comment (js block)', function(done) {
+        var expectedName = 'app.js';
+        var exist = false;
+
+        compare(
+            'comment-js.html',
+            function(newFile) {
+              if (newFile.path === expectedName) {
+                exist = true;
+                assert.equal(String(newFile.contents), String(getExpected(expectedName).contents));
+              }
+            },
+            function() {
+              assert.ok(exist);
+              done();
+            }
+            );
       });
     });
   });
