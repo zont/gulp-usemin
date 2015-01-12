@@ -489,5 +489,25 @@ describe('gulp-usemin', function() {
         );
       });
     });
+
+    it('async task', function(done) {
+      var less = require('gulp-less');
+      var cssmin = require('gulp-minify-css');
+      var stream = usemin({
+        less: [less(), 'concat', cssmin()]
+      });
+
+      var name = 'style.css';
+      var expectedName = 'min-style.css';
+
+      stream.on('data', function(newFile) {
+        if (path.basename(newFile.path) === path.basename(name)) {
+          assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+          done();
+        }
+      });
+
+      stream.write(getFixture('async-less.html'));
+    });
   });
 });
