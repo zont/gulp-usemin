@@ -11,11 +11,6 @@ var PassThrough = require('stream').PassThrough;
 var path = require('path');
 var usemin = require('../index');
 
-var jsmin = require('gulp-uglify');
-var htmlmin = require('gulp-minify-html');
-var cssmin = require('gulp-minify-css');
-var rev = require('gulp-rev');
-
 function getFile(filePath) {
   return new gutil.File({
     path:     filePath,
@@ -35,6 +30,7 @@ function getExpected(filePath) {
 describe('gulp-usemin', function() {
   describe('allow removal sections', function() {
       function compare(name, expectedName, done) {
+        var htmlmin = require('gulp-minify-html');
         var stream = usemin({html: [htmlmin({empty: true, quotes: true})]});
 
         stream.on('data', function(newFile) {
@@ -110,6 +106,7 @@ describe('gulp-usemin', function() {
   describe('should work in buffer mode with', function() {
     describe('minified HTML:', function() {
       function compare(name, expectedName, done) {
+        var htmlmin = require('gulp-minify-html');
         var stream = usemin({html: [htmlmin({empty: true})]});
 
         stream.on('data', function(newFile) {
@@ -203,326 +200,166 @@ describe('gulp-usemin', function() {
     });
 
     describe('minified CSS:', function() {
-      function compare(name, callback, end) {
+      function compare(fixtureName, name, expectedName, end) {
+        var cssmin = require('gulp-minify-css');
         var stream = usemin({css: ['concat', cssmin()]});
+        var exist = false;
 
-        stream.on('data', callback);
-        stream.on('end', end);
+        stream.on('data', function(newFile) {
+          if (path.basename(newFile.path) === name) {
+            exist = true;
+            assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+          }
+        });
+        stream.on('end', function() {
+          assert.ok(exist);
+          end();
+        });
 
-        stream.write(getFixture(name));
+        stream.write(getFixture(fixtureName));
         stream.end();
       }
 
       it('simple (css block)', function(done) {
         var name = 'style.css';
         var expectedName = 'min-style.css';
-        var exist = false;
 
-        compare(
-            'simple-css.html',
-            function(newFile) {
-              if (newFile.path === name) {
-                exist = true;
-                assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('simple-css.html', name, expectedName, done);
       });
 
       it('simple with path (css block)', function(done) {
-        var name = path.join('data', 'css', 'style.css');
+        var name = 'style.css';
         var expectedName = path.join('data', 'css', 'min-style.css');
-        var exist = false;
 
-        compare(
-            'simple-css-path.html',
-            function(newFile) {
-              if (newFile.path === name) {
-                exist = true;
-                assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('simple-css-path.html', name, expectedName, done);
       });
 
       it('simple with alternate path (css block)', function(done) {
-        var name = path.join('data', 'css', 'style.css');
+        var name = 'style.css';
         var expectedName = path.join('data', 'css', 'min-style.css');
-        var exist = false;
 
-        compare(
-            'simple-css-alternate-path.html',
-            function(newFile) {
-              if (newFile.path === name) {
-                exist = true;
-                assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('simple-css-alternate-path.html', name, expectedName, done);
       });
     });
 
     describe('not minified CSS:', function() {
-      function compare(name, callback, end) {
+      function compare(fixtureName, expectedName, end) {
         var stream = usemin();
+        var exist = false;
 
-        stream.on('data', callback);
-        stream.on('end', end);
+        stream.on('data', function(newFile) {
+          if (path.basename(newFile.path) === path.basename(expectedName)) {
+            exist = true;
+            assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+          }
+        });
+        stream.on('end', function() {
+          assert.ok(exist);
+          end();
+        });
 
-        stream.write(getFixture(name));
+        stream.write(getFixture(fixtureName));
         stream.end();
       }
 
       it('simple (css block)', function(done) {
-        var expectedName = 'style.css';
-        var exist = false;
-
-        compare(
-            'simple-css.html',
-            function(newFile) {
-              if (newFile.path === expectedName) {
-                exist = true;
-                assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('simple-css.html', 'style.css', done);
       });
 
       it('simple (css block) (minified html)', function(done) {
-        var expectedName = 'style.css';
-        var exist = false;
-
-        compare(
-            'min-html-simple-css.html',
-            function(newFile) {
-              if (newFile.path === expectedName) {
-                exist = true;
-                assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('min-html-simple-css.html', 'style.css', done);
       });
 
       it('simple with path (css block)', function(done) {
-        var expectedName = path.join('data', 'css', 'style.css');
-        var exist = false;
-
-        compare(
-            'simple-css-path.html',
-            function(newFile) {
-              if (newFile.path === expectedName) {
-                exist = true;
-                assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('simple-css-path.html', path.join('data', 'css', 'style.css'), done);
       });
 
       it('simple with alternate path (css block)', function(done) {
-        var expectedName = path.join('data', 'css', 'style.css');
-        var exist = false;
-
-        compare(
-            'simple-css-alternate-path.html',
-            function(newFile) {
-              if (newFile.path === expectedName) {
-                exist = true;
-                assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('simple-css-alternate-path.html', path.join('data', 'css', 'style.css'), done);
       });
     });
 
     describe('minified JS:', function() {
-      function compare(name, callback, end) {
+      function compare(fixtureName, name, expectedName, end) {
+        var jsmin = require('gulp-uglify');
         var stream = usemin({js: [jsmin()]});
+        var exist = false;
 
-        stream.on('data', callback);
-        stream.on('end', end);
+        stream.on('data', function(newFile) {
+          if (path.basename(newFile.path) === path.basename(name)) {
+            exist = true;
+            assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+          }
+        });
+        stream.on('end', function() {
+          assert.ok(exist);
+          end();
+        });
 
-        stream.write(getFixture(name));
+        stream.write(getFixture(fixtureName));
         stream.end();
       }
 
       it('simple (js block)', function(done) {
-        var name = 'app.js';
-        var expectedName = 'min-app.js';
-        var exist = false;
-
-        compare(
-            'simple-js.html',
-            function(newFile) {
-              if (newFile.path === name) {
-                exist = true;
-                assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('simple-js.html', 'app.js', 'min-app.js', done);
       });
 
       it('simple with path (js block)', function(done) {
         var name = path.join('data', 'js', 'app.js');
         var expectedName = path.join('data', 'js', 'min-app.js');
-        var exist = false;
 
-        compare(
-            'simple-js-path.html',
-            function(newFile) {
-              if (newFile.path === name) {
-                exist = true;
-                assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('simple-js-path.html', name, expectedName, done);
       });
 
       it('simple with alternate path (js block)', function(done) {
         var name = path.join('data', 'js', 'app.js');
         var expectedName = path.join('data', 'js', 'min-app.js');
-        var exist = false;
 
-        compare(
-            'simple-js-alternate-path.html',
-            function(newFile) {
-              if (newFile.path === name) {
-                exist = true;
-                assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('simple-js-alternate-path.html', name, expectedName, done);
       });
     });
 
     describe('not minified JS:', function() {
-      function compare(name, callback, end) {
+      function compare(fixtureName, expectedName, end) {
         var stream = usemin();
+        var exist = false;
 
-        stream.on('data', callback);
-        stream.on('end', end);
+        stream.on('data', function(newFile) {
+          if (path.basename(newFile.path) === path.basename(expectedName)) {
+            exist = true;
+            assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+          }
+        });
+        stream.on('end', function() {
+          assert.ok(exist);
+          end();
+        });
 
-        stream.write(getFixture(name));
+        stream.write(getFixture(fixtureName));
         stream.end();
       }
 
       it('simple (js block)', function(done) {
-        var expectedName = 'app.js';
-        var exist = false;
-
-        compare(
-            'simple-js.html',
-            function(newFile) {
-              if (newFile.path === expectedName) {
-                exist = true;
-                assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('simple-js.html', 'app.js', done);
       });
 
       it('simple (js block) (minified html)', function(done) {
-        var expectedName = 'app.js';
-        var exist = false;
-
-        compare(
-            'min-html-simple-js.html',
-            function(newFile) {
-              if (newFile.path === expectedName) {
-                exist = true;
-                assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('min-html-simple-js.html', 'app.js', done);
       });
 
       it('simple with path (js block)', function(done) {
-        var expectedName = path.join('data', 'js', 'app.js');
-        var exist = false;
-
-        compare(
-            'simple-js-path.html',
-            function(newFile) {
-              if (newFile.path === expectedName) {
-                exist = true;
-                assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('simple-js-path.html', path.join('data', 'js', 'app.js'), done);
       });
 
       it('simple with alternate path (js block)', function(done) {
-        var expectedName = path.join('data', 'js', 'app.js');
-        var exist = false;
-
-        compare(
-            'simple-js-alternate-path.html',
-            function(newFile) {
-              if (newFile.path === expectedName) {
-                exist = true;
-                assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('simple-js-alternate-path.html', path.join('data', 'js', 'app.js'), done);
       });
     });
 
     it('many blocks', function(done) {
+      var cssmin = require('gulp-minify-css');
+      var jsmin = require('gulp-uglify');
+      var rev = require('gulp-rev');
       var stream = usemin({
         css1: ['concat', cssmin()],
         js1: [jsmin(), 'concat', rev()]
@@ -540,11 +377,11 @@ describe('gulp-usemin', function() {
       var htmlExist = false;
 
       stream.on('data', function(newFile) {
-        if (newFile.path === nameCss) {
+        if (path.basename(newFile.path) === path.basename(nameCss)) {
           cssExist = true;
           assert.equal(String(getExpected(expectedNameCss).contents), String(newFile.contents));
         }
-        else if (newFile.path === nameJs) {
+        else if (path.basename(newFile.path) === path.basename(nameJs)) {
           jsExist = true;
           assert.equal(String(getExpected(expectedNameJs).contents), String(newFile.contents));
         }
@@ -574,7 +411,7 @@ describe('gulp-usemin', function() {
         var expectedName = 'style.css';
         var exist = false;
         var callback = function(newFile) {
-          if (newFile.path === expectedName) {
+          if (path.basename(newFile.path) === expectedName) {
             exist = true;
             assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
           }
@@ -630,52 +467,31 @@ describe('gulp-usemin', function() {
     });
 
     describe('globbed files:', function() {
-      function compare(name, callback, end) {
+      function compare(fixtureName, name, end) {
         var stream = usemin();
+        var exist = false;
 
-        stream.on('data', callback);
-        stream.on('end', end);
+        stream.on('data', function(newFile) {
+          if (path.basename(newFile.path) === name) {
+            exist = true;
+            assert.equal(String(newFile.contents), String(getExpected(name).contents));
+          }
+        });
+        stream.on('end', function() {
+          assert.ok(exist);
+          end();
+        });
 
-        stream.write(getFixture(name));
+        stream.write(getFixture(fixtureName));
         stream.end();
       }
 
       it('glob (js block)', function(done) {
-        var expectedName = 'app.js';
-        var exist = false;
-
-        compare(
-            'glob-js.html',
-            function(newFile) {
-              if (newFile.path === expectedName) {
-                exist = true;
-                assert.equal(String(newFile.contents), String(getExpected(expectedName).contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('glob-js.html', 'app.js', done);
       });
 
       it('glob (css block)', function(done) {
-        var expectedName = 'style.css';
-        var exist = false;
-
-        compare(
-            'glob-css.html',
-            function(newFile) {
-              if (newFile.path === expectedName) {
-                exist = true;
-                assert.equal(String(newFile.contents), String(getExpected(expectedName).contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
-              done();
-            }
-            );
+        compare('glob-css.html', 'style.css', done);
       });
     });
   });
