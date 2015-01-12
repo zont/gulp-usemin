@@ -34,15 +34,13 @@ describe('gulp-usemin', function() {
         var stream = usemin({html: [htmlmin({empty: true, quotes: true})]});
 
         stream.on('data', function(newFile) {
-          if (path.basename(newFile.path) === name)
+          if (path.basename(newFile.path) === name) {
             assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-        });
-        stream.on('end', function() {
-          done();
+            done();
+          }
         });
 
         stream.write(getFixture(name));
-        stream.end();
       }
 
       it('simple js block', function(done) {
@@ -84,7 +82,6 @@ describe('gulp-usemin', function() {
       }, 1000);
 
       stream.write(fakeFile);
-      stream.end();
     });
 
     it('html without blocks', function(done) {
@@ -97,14 +94,10 @@ describe('gulp-usemin', function() {
 
       stream.on('data', function(newFile) {
         assert.equal(content, String(newFile.contents));
-      });
-
-      stream.on('end', function() {
         done();
       });
 
       stream.write(fakeFile);
-      stream.end();
     });
   });
 
@@ -115,11 +108,10 @@ describe('gulp-usemin', function() {
         var stream = usemin({html: [htmlmin({empty: true})]});
 
         stream.on('data', function(newFile) {
-          if (path.basename(newFile.path) === name)
+          if (path.basename(newFile.path) === name) {
             assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-        });
-        stream.on('end', function() {
-          done();
+            done();
+          }
         });
         stream.on('error', function() {
           if (fail)
@@ -127,7 +119,6 @@ describe('gulp-usemin', function() {
         });
 
         stream.write(getFixture(name));
-        stream.end();
       }
 
       it('simple js block', function(done) {
@@ -171,15 +162,13 @@ describe('gulp-usemin', function() {
         var stream = usemin();
 
         stream.on('data', function(newFile) {
-          if (path.basename(newFile.path) === name)
+          if (path.basename(newFile.path) === name) {
             assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-        });
-        stream.on('end', function() {
-          done();
+            done();
+          }
         });
 
         stream.write(getFixture(name));
-        stream.end();
       }
 
       it('simple js block with single quotes', function (done) {
@@ -231,21 +220,15 @@ describe('gulp-usemin', function() {
       function compare(fixtureName, name, expectedName, end) {
         var cssmin = require('gulp-minify-css');
         var stream = usemin({css: ['concat', cssmin()]});
-        var exist = false;
 
         stream.on('data', function(newFile) {
           if (path.basename(newFile.path) === name) {
-            exist = true;
             assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+            end();
           }
-        });
-        stream.on('end', function() {
-          assert.ok(exist);
-          end();
         });
 
         stream.write(getFixture(fixtureName));
-        stream.end();
       }
 
       it('simple (css block)', function(done) {
@@ -273,21 +256,15 @@ describe('gulp-usemin', function() {
     describe('not minified CSS:', function() {
       function compare(fixtureName, expectedName, end) {
         var stream = usemin();
-        var exist = false;
 
         stream.on('data', function(newFile) {
           if (path.basename(newFile.path) === path.basename(expectedName)) {
-            exist = true;
             assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+            end();
           }
-        });
-        stream.on('end', function() {
-          assert.ok(exist);
-          end();
         });
 
         stream.write(getFixture(fixtureName));
-        stream.end();
       }
 
       it('simple (css block)', function(done) {
@@ -311,21 +288,15 @@ describe('gulp-usemin', function() {
       function compare(fixtureName, name, expectedName, end) {
         var jsmin = require('gulp-uglify');
         var stream = usemin({js: [jsmin()]});
-        var exist = false;
 
         stream.on('data', function(newFile) {
           if (path.basename(newFile.path) === path.basename(name)) {
-            exist = true;
             assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+            end();
           }
-        });
-        stream.on('end', function() {
-          assert.ok(exist);
-          end();
         });
 
         stream.write(getFixture(fixtureName));
-        stream.end();
       }
 
       it('simple (js block)', function(done) {
@@ -350,21 +321,15 @@ describe('gulp-usemin', function() {
     describe('not minified JS:', function() {
       function compare(fixtureName, expectedName, end) {
         var stream = usemin();
-        var exist = false;
 
         stream.on('data', function(newFile) {
           if (path.basename(newFile.path) === path.basename(expectedName)) {
-            exist = true;
             assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+            end();
           }
-        });
-        stream.on('end', function() {
-          assert.ok(exist);
-          end();
         });
 
         stream.write(getFixture(fixtureName));
-        stream.end();
       }
 
       it('simple (js block)', function(done) {
@@ -402,7 +367,6 @@ describe('gulp-usemin', function() {
       var cssExist = false;
       var jsExist = false;
       var js1Exist = false;
-      var htmlExist = false;
 
       stream.on('data', function(newFile) {
         if (path.basename(newFile.path) === path.basename(nameCss)) {
@@ -418,42 +382,29 @@ describe('gulp-usemin', function() {
           assert.equal(String(getExpected(expectedNameJs1).contents), String(newFile.contents));
         }
         else {
-          htmlExist = true;
+          assert.ok(cssExist);
+          assert.ok(jsExist);
+          assert.ok(js1Exist);
+          done();
         }
-      });
-      stream.on('end', function() {
-        assert.ok(cssExist);
-        assert.ok(jsExist);
-        assert.ok(js1Exist);
-        assert.ok(htmlExist);
-        done();
       });
 
       stream.write(getFixture('many-blocks.html'));
-      stream.end();
     });
 
     describe('assetsDir option:', function() {
       function compare(assetsDir, done) {
         var stream = usemin({assetsDir: assetsDir});
         var expectedName = 'style.css';
-        var exist = false;
-        var callback = function(newFile) {
-          if (path.basename(newFile.path) === expectedName) {
-            exist = true;
-            assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-          }
-        };
-        var end = function() {
-          assert.ok(exist);
-          done();
-        };
 
-        stream.on('data', callback);
-        stream.on('end', end);
+        stream.on('data', function(newFile) {
+          if (path.basename(newFile.path) === expectedName) {
+            assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
+            done();
+          }
+        });
 
         stream.write(getFixture('simple-css.html'));
-        stream.end();
       }
 
       it('absolute path', function(done) {
@@ -470,15 +421,13 @@ describe('gulp-usemin', function() {
         var stream = usemin();
 
         stream.on('data', function(newFile) {
-          if (path.basename(newFile.path) === name)
+          if (path.basename(newFile.path) === name) {
             assert.equal(String(getExpected(expectedName).contents), String(newFile.contents));
-        });
-        stream.on('end', function() {
-          done();
+            done();
+          }
         });
 
         stream.write(getFixture(name));
-        stream.end();
       }
 
       it('conditional (js block)', function(done) {
@@ -497,21 +446,15 @@ describe('gulp-usemin', function() {
     describe('globbed files:', function() {
       function compare(fixtureName, name, end) {
         var stream = usemin();
-        var exist = false;
 
         stream.on('data', function(newFile) {
           if (path.basename(newFile.path) === name) {
-            exist = true;
             assert.equal(String(newFile.contents), String(getExpected(name).contents));
+            end();
           }
-        });
-        stream.on('end', function() {
-          assert.ok(exist);
-          end();
         });
 
         stream.write(getFixture(fixtureName));
-        stream.end();
       }
 
       it('glob (js block)', function(done) {
@@ -524,33 +467,26 @@ describe('gulp-usemin', function() {
     });
 
     describe('comment files:', function() {
-      function compare(name, callback, end) {
+      function compare(name, callback) {
         var stream = usemin({enableHtmlComment: true});
 
         stream.on('data', callback);
-        stream.on('end', end);
 
         stream.write(getFixture(name));
-        stream.end();
       }
 
       it('comment (js block)', function(done) {
         var expectedName = 'app.js';
-        var exist = false;
 
         compare(
-            'comment-js.html',
-            function(newFile) {
-              if (newFile.path === expectedName) {
-                exist = true;
-                assert.equal(String(newFile.contents), String(getExpected(expectedName).contents));
-              }
-            },
-            function() {
-              assert.ok(exist);
+          'comment-js.html',
+          function(newFile) {
+            if (path.basename(newFile.path) === expectedName) {
+              assert.equal(String(newFile.contents), String(getExpected(expectedName).contents));
               done();
             }
-            );
+          }
+        );
       });
     });
   });
