@@ -168,6 +168,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.10
+- fixed uppercase Q bug (on case-sensetive file systems)
+
 #####0.3.9
 - async tasks support
 
