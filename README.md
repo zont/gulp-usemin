@@ -168,6 +168,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.11
+- fixed #88
+
 #####0.3.10
 - fixed uppercase Q bug (on case-sensetive file systems)
 
