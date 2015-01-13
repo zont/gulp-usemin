@@ -14,7 +14,7 @@ module.exports = function(options) {
     else {
       try {
         var blocks = blocksBuilder(file, options);
-        htmlBuilder(file, blocks, options, this.push.bind(this));
+        htmlBuilder(file, blocks, options, this.push.bind(this), callback);
       } catch(e) {
         this.emit('error', e);
         callback();
