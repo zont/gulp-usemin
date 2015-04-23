@@ -176,7 +176,7 @@ describe('gulp-usemin', function() {
       });
 
       it('simple css block with single quotes', function (done) {
-        compare('single-quotes-js.html', 'single-quotes-js.html', done);
+        compare('single-quotes-css.html', 'single-quotes-css.html', done);
       });
 
       it('simple (js block)', function(done) {
@@ -441,6 +441,15 @@ describe('gulp-usemin', function() {
       it('conditional (css + js)', function(done) {
         compare('conditional-complex.html', 'conditional-complex.html', done);
       });
+
+      it('conditional (inline js block)', function(done) {
+        compare('conditional-inline-js.html', 'conditional-inline-js.html', done);
+      });
+
+      it('conditional (inline css block)', function(done) {
+        compare('conditional-inline-css.html', 'conditional-inline-css.html', done);
+      });
+
     });
 
     describe('globbed files:', function() {
@@ -464,6 +473,15 @@ describe('gulp-usemin', function() {
       it('glob (css block)', function(done) {
         compare('glob-css.html', 'style.css', done);
       });
+
+      it('glob inline (js block)', function(done) {
+        compare('glob-inline-js.html', 'glob-inline-js.html', done);
+      })
+
+      it('glob inline (css block)', function(done) {
+        compare('glob-inline-css.html', 'glob-inline-css.html', done);
+      })
+
     });
 
     describe('comment files:', function() {
@@ -488,6 +506,38 @@ describe('gulp-usemin', function() {
           }
         );
       });
+    });
+
+    describe('inline Sources:', function() {
+      function compare(fixtureName, name, end) {
+        var stream = usemin();
+
+        stream.on('data', function(newFile) {
+          if (path.basename(newFile.path) === name) {
+            assert.equal(String(newFile.contents), String(getExpected(name).contents));
+            end();
+          }
+        });
+
+        stream.write(getFixture(fixtureName));
+      }
+
+      it('simple inline js block', function (done) {
+        compare('simple-inline-js.html', 'simple-inline-js.html', done);
+      });
+
+      it('simple inline css block', function (done) {
+        compare('simple-inline-css.html', 'simple-inline-css.html', done);
+      });
+
+      it('simple inline js block width single quotes', function (done) {
+        compare('single-quotes-inline-js.html', 'single-quotes-inline-js.html', done);
+      });
+
+      it('simple inline css block with single quotes', function (done) {
+        compare('single-quotes-inline-css.html', 'single-quotes-inline-css.html', done);
+      });
+
     });
 
     it('async task', function(done) {

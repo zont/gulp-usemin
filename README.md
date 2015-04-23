@@ -26,7 +26,9 @@ gulp.task('usemin', function () {
       .pipe(usemin({
         css: [minifyCss(), 'concat'],
         html: [minifyHtml({empty: true})],
-        js: [uglify(), rev()]
+        js: [uglify(), rev()],
+        inlinejs: [uglify()],
+        inlinecss: [minifyCss(), 'concat']
       }))
       .pipe(gulp.dest('build/'));
 });
@@ -69,6 +71,16 @@ An example of this in completed form can be seen below:
 
 <!-- build:remove -->
 <script src="js/localhostDependencies.js"></script>
+<!-- endbuild -->
+
+<!-- build:inlinejs -->
+<script src="../lib/angular-min.js"></script>
+<script src="../lib/angular-animate-min.js"></script>
+<!-- endbuild -->
+
+<!-- build:inlinecss -->
+<link rel="stylesheet" href="css/clear.css"/>
+<link rel="stylesheet" href="css/main.css"/>
 <!-- endbuild -->
 ```
 
