@@ -540,6 +540,25 @@ describe('gulp-usemin', function() {
 
     });
 
+    describe('path suffix files:', function() {
+      function compare(name, done) {
+        var stream = usemin({pathSuffix: '?t=1440587840169'});
+
+        stream.on('data', function(newFile) {
+          if (path.basename(newFile.path) === name) {
+            assert.equal(String(newFile.contents), String(getExpected(name).contents));
+            done();
+          }
+        });
+
+        stream.write(getFixture(name));
+      }
+
+      it('path suffix js block', function(done) {
+        compare('path-suffix.html', done);
+      });
+    });
+
     it('async task', function(done) {
       var less = require('gulp-less');
       var cssmin = require('gulp-minify-css');
