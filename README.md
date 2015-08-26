@@ -180,6 +180,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.12
+- fixed #121
+
 #####0.3.11
 - fixed #88
 
