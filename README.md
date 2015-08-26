@@ -110,6 +110,31 @@ Type: `Boolean`
 
 Keep HTML comment when processing
 
+#### pathSuffix
+Type: `String` or `Function`
+
+Add suffix to output of path, for example: pathSuffix="?t=1440587840169"
+```
+    <!-- build:css style.css -->
+    <link rel="stylesheet" href="css/main.css"/>
+    <!-- endbuild -->
+```
+This will generate the following output:
+```
+    <link rel="stylesheet" href="style.css?t=1440587840169"/>
+```
+
+If pathSuffix is a function, the argument will contain block file object,
+and should return string type of pathSuffix for example:
+```
+usemin({
+  pathSuffix: function(file) {
+    // process file object if need
+    return "?t=" + new Date().getTime();
+  }
+}
+```
+
 ## Use case
 
 ```
