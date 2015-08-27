@@ -4,7 +4,6 @@
 'use strict';
 
 var assert = require('assert');
-var es = require('event-stream');
 var fs = require('fs');
 var gutil = require('gulp-util');
 var PassThrough = require('stream').PassThrough;
@@ -476,12 +475,11 @@ describe('gulp-usemin', function() {
 
       it('glob inline (js block)', function(done) {
         compare('glob-inline-js.html', 'glob-inline-js.html', done);
-      })
+      });
 
       it('glob inline (css block)', function(done) {
         compare('glob-inline-css.html', 'glob-inline-css.html', done);
-      })
-
+      });
     });
 
     describe('comment files:', function() {
