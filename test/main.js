@@ -104,7 +104,11 @@ describe('gulp-usemin', function() {
     describe('minified HTML:', function() {
       function compare(name, expectedName, done, fail) {
         var htmlmin = require('gulp-minify-html');
-        var stream = usemin({html: [htmlmin({empty: true})]});
+        var stream = usemin({
+          html: [function() {
+            return htmlmin({empty: true});
+          }]
+        });
 
         stream.on('data', function(newFile) {
           if (path.basename(newFile.path) === name) {
@@ -353,8 +357,8 @@ describe('gulp-usemin', function() {
       var jsmin = require('gulp-uglify');
       var rev = require('gulp-rev');
       var stream = usemin({
-        css1: ['concat', cssmin()],
-        js1: [jsmin(), 'concat', rev()]
+        css1: ['concat', cssmin],
+        js1: [jsmin, 'concat', rev]
       });
 
       var nameCss = path.join('data', 'css', 'style.css');
@@ -363,9 +367,12 @@ describe('gulp-usemin', function() {
       var expectedNameJs = path.join('data', 'js', 'app.js');
       var nameJs1 = 'app1';
       var expectedNameJs1 = path.join('data', 'js', 'app_min_concat.js');
+      var nameJs2 = 'app2';
+      var expectedNameJs2 = path.join('data', 'js', 'app_min_concat.js');
       var cssExist = false;
       var jsExist = false;
       var js1Exist = false;
+      var js2Exist = false;
 
       stream.on('data', function(newFile) {
         if (path.basename(newFile.path) === path.basename(nameCss)) {
@@ -380,10 +387,15 @@ describe('gulp-usemin', function() {
           js1Exist = true;
           assert.equal(String(getExpected(expectedNameJs1).contents), String(newFile.contents));
         }
+        else if (newFile.path.indexOf(nameJs2) != -1) {
+          js2Exist = true;
+          assert.equal(String(getExpected(expectedNameJs2).contents), String(newFile.contents));
+        }
         else {
           assert.ok(cssExist);
           assert.ok(jsExist);
           assert.ok(js1Exist);
+          assert.ok(js2Exist);
           done();
         }
       });

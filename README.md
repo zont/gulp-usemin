@@ -17,30 +17,40 @@ Then, add it to your `gulpfile.js`:
 ```javascript
 var usemin = require('gulp-usemin');
 var uglify = require('gulp-uglify');
-var foreach = require('gulp-foreach');
 var minifyHtml = require('gulp-minify-html');
 var minifyCss = require('gulp-minify-css');
 var rev = require('gulp-rev');
 
-/*
- * foreach is because usemin 0.3.11 won't manipulate
- * multiple files as an array.
- */
+
 gulp.task('usemin', function() {
   return gulp.src('./*.html')
-    .pipe(foreach(function(stream, file) {
-      return stream
-        .pipe(usemin({
-          css: [ rev() ],
-          html: [ minifyHtml({ empty: true }) ],
-          js: [ uglify(), rev() ],
-          inlinejs: [ uglify() ],
-          inlinecss: [ minifyCss(), 'concat' ]
-        }))
-        .pipe(gulp.dest('build/'));
-    }));
+    .pipe(usemin({
+      css: [ rev() ],
+      html: [ minifyHtml({ empty: true }) ],
+      js: [ uglify(), rev() ],
+      inlinejs: [ uglify() ],
+      inlinecss: [ minifyCss(), 'concat' ]
+    }))
+    .pipe(gulp.dest('build/'));
 });
 ```
+
+If you need to call the same pipeline twice, you need to define each task as a function that returns the stream object that should be used.
+
+```javascript
+gulp.task('usemin', function() {
+  return gulp.src('./*.html')
+    .pipe(usemin({
+      css: [ rev ],
+      html: [ function () {return minifyHtml({ empty: true });} ],
+      js: [ uglify, rev ],
+      inlinejs: [ uglify ],
+      inlinecss: [ minifyCss, 'concat' ]
+    }))
+    .pipe(gulp.dest('build/'));
+});
+```
+
 
 ## API
 
@@ -187,6 +197,9 @@ This will generate the following output:
 ```
 
 ## Changelog
+
+#####0.3.14
+- fixed #91
 
 #####0.3.13
 - works fine only with gulp-foreach
