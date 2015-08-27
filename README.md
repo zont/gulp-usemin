@@ -188,6 +188,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.13
+- works fine only with gulp-foreach
+
 #####0.3.12
 - fixed #121
 
