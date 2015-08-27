@@ -352,6 +352,49 @@ describe('gulp-usemin', function() {
       });
     });
 
+    it('many html files', function(done) {
+      var cssmin = require('gulp-minify-css');
+      var jsmin = require('gulp-uglify');
+      var rev = require('gulp-rev');
+      var stream = usemin({
+        css: ['concat', cssmin],
+        js: ['concat', jsmin]
+      });
+
+      var nameCss = 'style.css';
+      var expectedNameCss = 'min-style.css';
+      var nameJs = 'app.js';
+      var expectedNameJs = 'min-app.js';
+      var cssExist = false;
+      var jsExist = false;
+      var htmlCount = 0;
+
+      stream.on('data', function(newFile) {
+        if (path.basename(newFile.path) === path.basename(nameCss)) {
+          cssExist = true;
+          assert.equal(String(getExpected(expectedNameCss).contents), String(newFile.contents));
+        }
+        else if (path.basename(newFile.path) === path.basename(nameJs)) {
+          jsExist = true;
+          assert.equal(String(getExpected(expectedNameJs).contents), String(newFile.contents));
+        }
+        else {
+          htmlCount += 1;
+        }
+      });
+
+      stream.on('end', function() {
+        assert.equal(htmlCount, 2);
+        assert.ok(cssExist);
+        assert.ok(jsExist);
+        done();
+      });
+
+      stream.write(getFixture('simple-css.html'));
+      stream.write(getFixture('simple-js.html'));
+      stream.end();
+    });
+
     it('many blocks', function(done) {
       var cssmin = require('gulp-minify-css');
       var jsmin = require('gulp-uglify');
