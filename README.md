@@ -17,20 +17,28 @@ Then, add it to your `gulpfile.js`:
 ```javascript
 var usemin = require('gulp-usemin');
 var uglify = require('gulp-uglify');
+var foreach = require('gulp-foreach');
 var minifyHtml = require('gulp-minify-html');
 var minifyCss = require('gulp-minify-css');
 var rev = require('gulp-rev');
 
-gulp.task('usemin', function () {
+/*
+ * foreach is because usemin 0.3.11 won't manipulate
+ * multiple files as an array.
+ */
+gulp.task('usemin', function() {
   return gulp.src('./*.html')
-      .pipe(usemin({
-        css: [minifyCss(), 'concat'],
-        html: [minifyHtml({empty: true})],
-        js: [uglify(), rev()],
-        inlinejs: [uglify()],
-        inlinecss: [minifyCss(), 'concat']
-      }))
-      .pipe(gulp.dest('build/'));
+    .pipe(foreach(function(stream, file) {
+      return stream
+        .pipe(usemin({
+          css: [ rev() ],
+          html: [ minifyHtml({ empty: true }) ],
+          js: [ uglify(), rev() ],
+          inlinejs: [ uglify() ],
+          inlinecss: [ minifyCss(), 'concat' ]
+        }))
+        .pipe(gulp.dest('build/'));
+    }));
 });
 ```
 
