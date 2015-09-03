@@ -205,7 +205,7 @@ This will generate the following output:
 - works fine only with gulp-foreach
 
 #####0.3.12
-- fixed #121
+- fixed #121. Depending on the node >= 0.12.
 
 #####0.3.11
 - fixed #88
