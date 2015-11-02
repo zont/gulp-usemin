@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/zont/gulp-usemin.svg?branch=master)](https://travis-ci.org/zont/gulp-usemin)
+
 # gulp-usemin
 > Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).
 
