@@ -199,6 +199,9 @@ This will generate the following output:
 ## Changelog
 
 #####0.3.14
+- Allow proper html output when blocks are empty (by ppowalowski)
+
+#####0.3.14
 - fixed #91
 
 #####0.3.13
