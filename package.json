@@ -22,7 +22,7 @@
 		"gulp-less": "2.0.1"
 	},
 	"scripts": {
-		"test": "mocha"
+		"test": "./node_modules/.bin/gulp"
 	},
 	"repository": {
 		"type": "git",
