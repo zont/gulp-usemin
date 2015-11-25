@@ -130,6 +130,31 @@ Type: `Boolean`
 
 Keep HTML comment when processing
 
+#### jsAttributes
+Type: `Object`
+
+Attach HTML attributes to the output js file.
+For Example :
+```js
+gulp.task('usemin', function() {
+  return gulp.src('./index.html')
+    .pipe(usemin({
+      html: [],
+      jsAttributes : {
+        async : true,
+        lorem : 'ipsum'
+      },
+      js: [ ]
+    }))
+    .pipe(gulp.dest('./'));
+});
+```
+Will give you :
+```html
+<script src="./lib.js" async lorem="ipsum" ></script>
+```
+As your built script tag.
+
 ## Use case
 
 ```
