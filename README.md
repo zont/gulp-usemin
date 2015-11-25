@@ -225,6 +225,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.16
+- Added feature to assign attributes to js script tags (by sohamkamani)
+
 #####0.3.14
 - Allow proper html output when blocks are empty (by ppowalowski)
 
