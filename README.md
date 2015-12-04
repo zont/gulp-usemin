@@ -155,6 +155,11 @@ Will give you :
 ```
 As your built script tag.
 
+#### cacheBuster
+Type: `Boolean`
+
+Insert a timestamp into the output file names to prevent the browser from using an cached older version.
+
 ## Use case
 
 ```
