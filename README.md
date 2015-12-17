@@ -142,7 +142,8 @@ gulp.task('usemin', function() {
       html: [],
       jsAttributes : {
         async : true,
-        lorem : 'ipsum'
+        lorem : 'ipsum',
+        seq   : [1, 2, 1]
       },
       js: [ ]
     }))
@@ -151,7 +152,9 @@ gulp.task('usemin', function() {
 ```
 Will give you :
 ```html
-<script src="./lib.js" async lorem="ipsum" ></script>
+<script src="./lib.js" async lorem="ipsum" seq="1"></script>
+<script src="./app.js" async lorem="ipsum" seq="2"></script>
+<script src="./extra.js" async lorem="ipsum" seq="1"></script>
 ```
 As your built script tag.
 
