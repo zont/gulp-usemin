@@ -225,6 +225,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.18
+- Fixed relative path for script in subfolder bug
+
 #####0.3.17
 - Fixed block output when stream returns multiple files (by maksidom)
 
