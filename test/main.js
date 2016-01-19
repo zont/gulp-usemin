@@ -613,4 +613,42 @@ describe('gulp-usemin', function() {
       stream.write(getFixture('async-less.html'));
     });
   });
+
+  it('multiple files in stream', function(done) {
+    var multipleFiles = function() {
+      var through = require('through2');
+      var File = gutil.File;
+
+      return through.obj(function(file, enc, cb) {
+        var stream = this;
+
+        stream.push(new File({
+          cwd: file.cwd,
+          base: file.base,
+          path: file.path,
+          contents: new Buffer('test1')
+        }));
+
+        stream.push(new File({
+          cwd: file.cwd,
+          base: file.base,
+          path: file.path,
+          contents: new Buffer('test2')
+        }));
+      });
+    };
+    var stream = usemin({
+      css: [multipleFiles],
+      js: [multipleFiles]
+    });
+
+    stream.on('data', function(newFile) {
+      if (path.basename(newFile.path) === path.basename('multiple-files.html')) {
+        assert.equal(String(getExpected('multiple-files.html').contents), String(newFile.contents));
+        done();
+      }
+    });
+
+    stream.write(getFixture('multiple-files.html'));
+  });
 });
