@@ -1,6 +1,6 @@
 {
 	"name": "gulp-usemin",
-	"version": "0.3.16",
+	"version": "0.3.17",
 	"description": "Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).",
 	"main": "index.js",
 	"dependencies": {
@@ -37,6 +37,6 @@
 		"url": "https://github.com/zont/gulp-usemin/issues"
 	},
 	"engines": {
-		"node": ">=0.8"
+		"node": ">=0.12"
 	}
 }

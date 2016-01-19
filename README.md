@@ -225,6 +225,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.17
+- Fixed block output when stream returns multiple files (by maksidom)
+
 #####0.3.16
 - Added feature to assign attributes to js script tags (by sohamkamani)
 
