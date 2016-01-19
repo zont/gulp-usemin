@@ -9,6 +9,7 @@ var gutil = require('gulp-util');
 var PassThrough = require('stream').PassThrough;
 var path = require('path');
 var usemin = require('../index');
+var vfs = require('vinyl-fs');
 
 function getFile(filePath) {
   return new gutil.File({
@@ -612,6 +613,27 @@ describe('gulp-usemin', function() {
 
       stream.write(getFixture('async-less.html'));
     });
+
+    it('subfolders', function(done) {
+      var stream = usemin();
+      var jsExist = false;
+      var nameJs = path.join('subfolder', 'app.js');
+
+      stream.on('data', function(newFile) {
+        if (path.basename(newFile.path) === path.basename(nameJs)) {
+          jsExist = true;
+          assert.equal(path.relative(newFile.base, newFile.path), nameJs);
+          assert.equal(String(getExpected(nameJs).contents), String(newFile.contents));
+        }
+        else {
+          assert.ok(jsExist);
+          done();
+        }
+      });
+
+      vfs.src('test/fixtures/**/index.html')
+        .pipe(stream);
+    });
   });
 
   it('multiple files in stream', function(done) {
@@ -619,7 +641,7 @@ describe('gulp-usemin', function() {
       var through = require('through2');
       var File = gutil.File;
 
-      return through.obj(function(file, enc, cb) {
+      return through.obj(function(file) {
         var stream = this;
 
         stream.push(new File({
