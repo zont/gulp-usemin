@@ -593,6 +593,37 @@ describe('gulp-usemin', function() {
 
     });
 
+    describe('array jsAttributes:', function() {
+
+      function compare(fixtureName, name, end) {
+        var stream = usemin({
+          jsAttributes: {
+            seq: [1, 2, 1, 3],
+            color: ['blue', 'red', 'yellow', 'pink']
+          },
+          js: [],
+          js1: [],
+          js2: [],
+          js3: []
+
+        });
+
+        stream.on('data', function(newFile) {
+          if (path.basename(newFile.path) === name) {
+            assert.equal(String(newFile.contents), String(getExpected(name).contents));
+            end();
+          }
+        });
+
+        stream.write(getFixture(fixtureName));
+      }
+
+      it('js attributes with array define', function (done) {
+        compare('array-js-attributes.html', 'array-js-attributes.html', done);
+      });
+
+    });
+
     it('async task', function(done) {
       var less = require('gulp-less');
       var cssmin = require('gulp-minify-css');

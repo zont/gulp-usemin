@@ -145,7 +145,9 @@ gulp.task('usemin', function() {
         lorem : 'ipsum',
         seq   : [1, 2, 1]
       },
-      js: [ ]
+      js: [ ],
+      js1:[ ],
+      js2:[ ]
     }))
     .pipe(gulp.dest('./'));
 });
