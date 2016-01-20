@@ -230,6 +230,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.20
+- Added support array value for jsAttributes (by kuitos)
+
 #####0.3.18
 - Fixed relative path for script in subfolder bug
 
