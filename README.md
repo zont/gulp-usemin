@@ -230,6 +230,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.21
+- Added support paths with querystring or hash (by Lanfei)
+
 #####0.3.20
 - Added support array value for jsAttributes (by kuitos)
 
@@ -242,7 +245,7 @@ This will generate the following output:
 #####0.3.16
 - Added feature to assign attributes to js script tags (by sohamkamani)
 
-#####0.3.14
+#####0.3.15
 - Allow proper html output when blocks are empty (by ppowalowski)
 
 #####0.3.14
