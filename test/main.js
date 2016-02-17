@@ -159,6 +159,10 @@ describe('gulp-usemin', function() {
       it('complex with path (css + js)', function(done) {
         compare('complex-path.html', 'min-complex-path.html', done);
       });
+
+      it('paths with querystring', function(done) {
+        compare('paths-with-querystring.html', 'min-paths-with-querystring.html', done);
+      });
     });
 
     describe('not minified HTML:', function() {
@@ -217,6 +221,10 @@ describe('gulp-usemin', function() {
 
       it('multiple alternative paths', function(done) {
         compare('multiple-alternative-paths.html', 'multiple-alternative-paths.html', done);
+      });
+
+      it('paths with querystring', function(done) {
+        compare('paths-with-querystring.html', 'paths-with-querystring.html', done);
       });
     });
 
