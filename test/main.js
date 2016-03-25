@@ -93,6 +93,7 @@ describe('gulp-usemin', function() {
       });
 
       stream.on('data', function(newFile) {
+        console.log('\n\n', newFile, content, '\n\n');
         assert.equal(content, String(newFile.contents));
         done();
       });
