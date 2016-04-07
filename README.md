@@ -233,6 +233,25 @@ This will generate the following output:
     <script src="js/optimized.js"></script>
 ```
 
+#### preprocessPath
+Type: `Function`
+
+Arguments: `String:filePath`
+
+Return a string that gets used before usemin fetches files
+
+#### generatedUrl
+Type: `Function`
+
+Arguments: `String:name`, `Path:path`, `File:file`
+
+Default:
+```
+function(name, path, file){
+  return name.replace(path.basename(name), path.basename(file.path))
+};
+```
+
 ## Changelog
 
 #####0.3.22
