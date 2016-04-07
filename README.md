@@ -77,6 +77,11 @@ An example of this in completed form can be seen below:
 <link rel="stylesheet" href="css/main.css"/>
 <!-- endbuild -->
 
+<!-- build:htmlimport components-packed.html -->
+<link rel="import" href="components-a.html">
+<link rel="import" href="components-b.html">
+<!-- endbuild -->
+
 <!-- build:js js/lib.js -->
 <script src="../lib/angular-min.js"></script>
 <script src="../lib/angular-animate-min.js"></script>
@@ -229,6 +234,9 @@ This will generate the following output:
 ```
 
 ## Changelog
+
+#####0.3.22
+- Added html import support (by linfaxin)
 
 #####0.3.21
 - Added support paths with querystring or hash (by Lanfei)
