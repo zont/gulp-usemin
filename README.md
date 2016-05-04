@@ -235,6 +235,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.23
+- Added support array value for cssAttributes (by MillerRen)
+
 #####0.3.22
 - Added html import support (by linfaxin)
 
