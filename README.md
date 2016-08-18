@@ -240,6 +240,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.24
+- Added option to skip missing resources (by adamhenson)
+
 #####0.3.23
 - Added support array value for cssAttributes (by MillerRen)
 
