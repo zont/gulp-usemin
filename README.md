@@ -165,6 +165,11 @@ Will give you :
 ```
 As your built script tag.
 
+#### skipMissingResources
+Type: `Boolean`
+
+Allows missing resources to be skipped, instead of throwing an error.
+
 ## Use case
 
 ```
