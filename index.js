@@ -6,7 +6,7 @@ module.exports = function(options) {
 
   return through.obj(function(file, enc, callback) {
     if (file.isStream()) {
-      this.emit('error', new gutil.PluginError('gulp-usemin', 'Streams are not supported!'));
+      this.emit('error', new gutil.PluginError('gulp-usenew', 'Streams are not supported!'));
       callback();
     }
     else if (file.isNull())

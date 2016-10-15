@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/zont/gulp-usemin.svg?branch=master)](https://travis-ci.org/zont/gulp-usemin)
 
-# gulp-usemin
+# gulp-usenew
 > Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).
 
 This task is designed for gulp >= 3 and node >= 4.0.
@@ -8,16 +8,16 @@ This task is designed for gulp >= 3 and node >= 4.0.
 
 ## Usage
 
-First, install `gulp-usemin` as a development dependency:
+First, install `gulp-usenew` as a development dependency:
 
 ```shell
-npm install --save-dev gulp-usemin
+npm install --save-dev gulp-usenew
 ```
 
 Then, add it to your `gulpfile.js`:
 
 ```javascript
-var usemin = require('gulp-usemin');
+var usemin = require('gulp-usenew');
 var uglify = require('gulp-uglify');
 var minifyHtml = require('gulp-minify-html');
 var minifyCss = require('gulp-minify-css');
@@ -240,109 +240,5 @@ This will generate the following output:
 
 ## Changelog
 
-#####0.3.24
-- Added option to skip missing resources (by adamhenson)
-
-#####0.3.23
-- Added support array value for cssAttributes (by MillerRen)
-
-#####0.3.22
-- Added html import support (by linfaxin)
-
-#####0.3.21
-- Added support paths with querystring or hash (by Lanfei)
-
-#####0.3.20
-- Added support array value for jsAttributes (by kuitos)
-
-#####0.3.18
-- Fixed relative path for script in subfolder bug
-
-#####0.3.17
-- Fixed block output when stream returns multiple files (by maksidom)
-
-#####0.3.16
-- Added feature to assign attributes to js script tags (by sohamkamani)
-
-#####0.3.15
-- Allow proper html output when blocks are empty (by ppowalowski)
-
-#####0.3.14
-- fixed #91
-
-#####0.3.13
-- works fine only with gulp-foreach
-
-#####0.3.12
-- fixed #121. Depending on the node >= 0.12.
-
-#####0.3.11
-- fixed #88
-
-#####0.3.10
-- fixed uppercase Q bug (on case-sensetive file systems)
-
-#####0.3.9
-- async tasks support
-
-#####0.3.8
-- allow removal option (by tejohnso)
-- added support for single quotes (by adicirstei)
-
-#####0.3.7
-- ouputRelativePath renamed outputRelativePath
-
-#####0.3.6
-- ouputRelativePath option (by bhstahl)
-
-#####0.3.5
-- Support for conditional comments inside build blocks (by simplydenis)
-
-#####0.3.4
-- When a file does not exist an error containing the missing path is thrown
-
-#####0.3.3
-- fixed dependencies
-- Add support for multiple alternative paths (by peleteiro)
-
-#####0.3.2
-- fixed assetsDir option (by rovjuvano)
-
-#####0.3.1
-- fixed fails to create source map files by uglify({outSourceMap: true})
-
-#####0.3.0
-- new version of options
-
-#####0.2.3
-- fixed html minify bug
-
-#####0.2.2
-- allow gulp-usemin to work with minified source HTML (by CWSpear)
-- fixed alternate path bug (by CWSpear)
-- add assetsDir option (by pursual)
-- add rev option (by pursual)
-
-#####0.2.1
-- fixed subfolders bug
-
-#####0.2.0
-- no minification by default. New options API
-
-#####0.1.4
-- add alternate search path support
-
-#####0.1.3
-- add support for absolute URLs (by vasa-chi)
-
-#####0.1.1
-- fixed aggressive replace comments
-
-#####0.1.0
-- fixed some bugs. Add tests.
-
-#####0.0.2
-- add minification by default
-
-#####0.0.1
-- initial release
+#####0.1
+基于 gulp-usemin,改进错误提示;
