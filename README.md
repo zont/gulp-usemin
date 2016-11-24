@@ -240,6 +240,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.26
+- Fix for css media queries (by akempes)
+
 #####0.3.24
 - Added option to skip missing resources (by adamhenson)
 
