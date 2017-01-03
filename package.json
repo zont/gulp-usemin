@@ -6,7 +6,7 @@
 	"dependencies": {
 		"gulp-util": "~2.2.14",
 		"through2": "~0.5.1",
-		"glob": "~4.0.4",
+		"glob": "^7.1.1",
 		"gulp-concat": "~2.4.1"
 	},
 	"devDependencies": {
