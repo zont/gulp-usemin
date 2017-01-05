@@ -240,6 +240,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.27
+- Updated glob dependency (by icholy)
+
 #####0.3.26
 - Fix for css media queries (by akempes)
 
