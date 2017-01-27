@@ -19,7 +19,7 @@ Then, add it to your `gulpfile.js`:
 ```javascript
 var usemin = require('gulp-usemin');
 var uglify = require('gulp-uglify');
-var minifyHtml = require('gulp-minify-html');
+var htmlmin = require('gulp-htmlmin');
 var minifyCss = require('gulp-minify-css');
 var rev = require('gulp-rev');
 
@@ -28,7 +28,7 @@ gulp.task('usemin', function() {
   return gulp.src('./*.html')
     .pipe(usemin({
       css: [ rev() ],
-      html: [ minifyHtml({ empty: true }) ],
+      html: [ htmlmin({ collapseWhitespace: true }) ],
       js: [ uglify(), rev() ],
       inlinejs: [ uglify() ],
       inlinecss: [ minifyCss(), 'concat' ]
@@ -44,7 +44,7 @@ gulp.task('usemin', function() {
   return gulp.src('./*.html')
     .pipe(usemin({
       css: [ rev ],
-      html: [ function () {return minifyHtml({ empty: true });} ],
+      html: [ function () {return htmlmin({ collapseWhitespace: true });} ],
       js: [ uglify, rev ],
       inlinejs: [ uglify ],
       inlinecss: [ minifyCss, 'concat' ]

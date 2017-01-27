@@ -30,8 +30,8 @@ function getExpected(filePath) {
 describe('gulp-usemin', function() {
   describe('allow removal sections', function() {
       function compare(name, expectedName, done) {
-        var htmlmin = require('gulp-minify-html');
-        var stream = usemin({html: [htmlmin({empty: true, quotes: true})]});
+        var htmlmin = require('gulp-htmlmin');
+        var stream = usemin({html: [htmlmin({collapseWhitespace: true})]});
 
         stream.on('data', function(newFile) {
           if (path.basename(newFile.path) === name) {
@@ -104,10 +104,10 @@ describe('gulp-usemin', function() {
   describe('should work in buffer mode with', function() {
     describe('minified HTML:', function() {
       function compare(name, expectedName, done, fail) {
-        var htmlmin = require('gulp-minify-html');
+        var htmlmin = require('gulp-htmlmin');
         var stream = usemin({
           html: [function() {
-            return htmlmin({empty: true});
+            return htmlmin({collapseWhitespace: true, removeAttributeQuotes: true});
           }]
         });
 
