@@ -4,22 +4,23 @@
 	"description": "Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).",
 	"main": "index.js",
 	"dependencies": {
-		"gulp-util": "~2.2.14",
-		"through2": "~0.5.1",
-		"glob": "^7.1.1",
-		"gulp-concat": "~2.4.1"
+		"gulp-util": "~3.0.8",
+		"through2": "~2.0.3",
+		"glob": "~7.1.1",
+		"gulp-concat": "~2.6.1"
 	},
 	"devDependencies": {
-		"event-stream": "~3.1.0",
-		"vinyl-fs": "~2.3.1",
-		"gulp": "~3.8.6",
-		"gulp-jshint": "~1.7.0",
-		"gulp-mocha": "~0.5.1",
-		"gulp-uglify": "~0.3.1",
-		"gulp-htmlmin": "^3.0.0",
-		"gulp-clean-css": "^2.3.2",
-		"gulp-rev": "~0.4.2",
-		"gulp-less": "2.0.1"
+		"event-stream": "~3.3.4",
+		"vinyl-fs": "~2.4.4",
+		"gulp": "~3.9.1",
+		"gulp-jshint": "~2.0.4",
+		"gulp-mocha": "~3.0.1",
+		"gulp-uglify": "~2.0.1",
+		"gulp-htmlmin": "~3.0.0",
+		"gulp-clean-css": "~2.3.2",
+		"gulp-rev": "~7.1.2",
+		"gulp-less": "3.3.0",
+		"jshint": "~2.9.4"
 	},
 	"scripts": {
 		"test": "./node_modules/.bin/gulp"
