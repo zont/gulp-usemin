@@ -240,6 +240,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.28
+- Update dependancies and replace deprecated packages (by JamyGolden)
+
 #####0.3.27
 - Updated glob dependency (by icholy)
 
