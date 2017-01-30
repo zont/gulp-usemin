@@ -230,7 +230,7 @@ describe('gulp-usemin', function() {
 
     describe('minified CSS:', function() {
       function compare(fixtureName, name, expectedName, end) {
-        var cssmin = require('gulp-minify-css');
+        var cssmin = require('gulp-clean-css');
         var stream = usemin({css: ['concat', cssmin()]});
 
         stream.on('data', function(newFile) {
@@ -362,7 +362,7 @@ describe('gulp-usemin', function() {
     });
 
     it('many html files', function(done) {
-      var cssmin = require('gulp-minify-css');
+      var cssmin = require('gulp-clean-css');
       var jsmin = require('gulp-uglify');
       var rev = require('gulp-rev');
       var stream = usemin({
@@ -405,7 +405,7 @@ describe('gulp-usemin', function() {
     });
 
     it('many blocks', function(done) {
-      var cssmin = require('gulp-minify-css');
+      var cssmin = require('gulp-clean-css');
       var jsmin = require('gulp-uglify');
       var rev = require('gulp-rev');
       var stream = usemin({
@@ -635,7 +635,7 @@ describe('gulp-usemin', function() {
 
     it('async task', function(done) {
       var less = require('gulp-less');
-      var cssmin = require('gulp-minify-css');
+      var cssmin = require('gulp-clean-css');
       var stream = usemin({
         less: [less(), 'concat', cssmin()]
       });
