@@ -1,45 +1,45 @@
 {
-	"name": "gulp-usemin",
-	"version": "0.3.28",
-	"description": "Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).",
-	"main": "index.js",
-	"dependencies": {
-		"gulp-util": "~3.0.8",
-		"through2": "~2.0.3",
-		"glob": "~7.1.1",
-		"gulp-concat": "~2.6.1"
-	},
-	"devDependencies": {
-		"event-stream": "~3.3.4",
-		"vinyl-fs": "~2.4.4",
-		"gulp": "~3.9.1",
-		"gulp-jshint": "~2.0.4",
-		"gulp-mocha": "~3.0.1",
-		"gulp-uglify": "~2.0.1",
-		"gulp-htmlmin": "~3.0.0",
-		"gulp-clean-css": "~2.3.2",
-		"gulp-rev": "~7.1.2",
-		"gulp-less": "3.3.0",
-		"jshint": "~2.9.4"
-	},
-	"scripts": {
-		"test": "./node_modules/.bin/gulp"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/zont/gulp-usemin.git"
-	},
-	"keywords": [
-		"gulpplugin",
-		"usemin",
-		"gulp-usemin"
-	],
-	"author": "Alexander Zonov <zont@pochta.ru>",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/zont/gulp-usemin/issues"
-	},
-	"engines": {
-		"node": ">=0.12"
-	}
+  "name": "gulp-usemin",
+  "version": "0.3.28",
+  "description": "Replaces references to non-optimized scripts or stylesheets into a set of HTML files (or any templates/views).",
+  "main": "index.js",
+  "dependencies": {
+    "glob": "~7.1.1",
+    "gulp-concat": "~2.6.1",
+    "gulp-util": "~3.0.8",
+    "through2": "~2.0.3"
+  },
+  "devDependencies": {
+    "event-stream": "~3.3.4",
+    "gulp": "~3.9.1",
+    "gulp-clean-css": "~3.9.0",
+    "gulp-htmlmin": "~3.0.0",
+    "gulp-jshint": "~2.0.4",
+    "gulp-less": "~3.3.2",
+    "gulp-mocha": "~4.3.1",
+    "gulp-rev": "~8.1.0",
+    "gulp-uglify": "~3.0.0",
+    "jshint": "~2.9.4",
+    "vinyl-fs": "~2.4.4"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/zont/gulp-usemin.git"
+  },
+  "keywords": [
+    "gulpplugin",
+    "usemin",
+    "gulp-usemin"
+  ],
+  "author": "Alexander Zonov <zont@pochta.ru>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zont/gulp-usemin/issues"
+  },
+  "engines": {
+    "node": ">=0.12"
+  }
 }
