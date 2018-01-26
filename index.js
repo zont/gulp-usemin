@@ -1,12 +1,12 @@
 module.exports = function(options) {
   var through = require('through2');
-  var gutil = require('gulp-util');
+  var PluginError = require('plugin-error');
   var blocksBuilder = require('./lib/blocksBuilder.js');
   var htmlBuilder = require('./lib/htmlBuilder.js');
 
   return through.obj(function(file, enc, callback) {
     if (file.isStream()) {
-      this.emit('error', new gutil.PluginError('gulp-usemin', 'Streams are not supported!'));
+      this.emit('error', new PluginError('gulp-usemin', 'Streams are not supported!'));
       callback();
     }
     else if (file.isNull())
