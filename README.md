@@ -242,6 +242,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.29
+- Migrate gulp-util to individual modules (by pioug)
+
 #####0.3.28
 - Update dependancies and replace deprecated packages (by JamyGolden)
 
