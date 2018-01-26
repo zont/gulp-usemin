@@ -5,14 +5,14 @@
 
 var assert = require('assert');
 var fs = require('fs');
-var gutil = require('gulp-util');
 var PassThrough = require('stream').PassThrough;
 var path = require('path');
 var usemin = require('../index');
 var vfs = require('vinyl-fs');
+var Vinyl = require('vinyl');
 
 function getFile(filePath) {
-  return new gutil.File({
+  return new Vinyl({
     path:     filePath,
     base:     path.dirname(filePath),
     contents: fs.readFileSync(filePath)
@@ -66,7 +66,7 @@ describe('gulp-usemin', function() {
       var stream = usemin();
       var t;
       var fakeStream = new PassThrough();
-      var fakeFile = new gutil.File({
+      var fakeFile = new Vinyl({
         contents: fakeStream
       });
       fakeStream.end();
@@ -87,7 +87,7 @@ describe('gulp-usemin', function() {
     it('html without blocks', function(done) {
       var stream = usemin();
       var content = '<div>content</div>';
-      var fakeFile = new gutil.File({
+      var fakeFile = new Vinyl({
         path: 'test.file',
         contents: new Buffer(content)
       });
@@ -678,19 +678,18 @@ describe('gulp-usemin', function() {
   it('multiple files in stream', function(done) {
     var multipleFiles = function() {
       var through = require('through2');
-      var File = gutil.File;
 
       return through.obj(function(file) {
         var stream = this;
 
-        stream.push(new File({
+        stream.push(new Vinyl({
           cwd: file.cwd,
           base: file.base,
           path: file.path,
           contents: new Buffer('test1')
         }));
 
-        stream.push(new File({
+        stream.push(new Vinyl({
           cwd: file.cwd,
           base: file.base,
           path: file.path,
