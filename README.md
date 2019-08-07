@@ -242,6 +242,9 @@ This will generate the following output:
 
 ## Changelog
 
+#####0.3.30
+- Introduce html import attributes (by jackw)
+
 #####0.3.29
 - Migrate gulp-util to individual modules (by pioug)
 
